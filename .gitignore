@@ -1,0 +1,12 @@
+# Eclipse / Java
+/bin/
+/build/
+target/
+*.class
+
+# Eclipse metadata that is machine-specific
+.settings/
+
+# OS junk
+.DS_Store
+Thumbs.db
