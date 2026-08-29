@@ -69,8 +69,19 @@ public class TileManager {
 			setup(37, "road11", false);
 			setup(38, "road12", false);
 			setup(39, "earth", false);
-			setup(40, "wall", false);
-			setup(41, "tree", false);
+			setup(40, "wall", true);
+			setup(41, "tree", true);
+			
+			//PLACEHOLDER
+			setup(42, "tree", true);
+			setup(43, "tree", true);
+			setup(44, "tree", true);
+			setup(45, "tree", true);
+			setup(46, "tree", true);
+			setup(47, "tree", true);
+			setup(48, "tree", true);
+			setup(49, "tree", true);
+			//PLACEHOLDER
 	}
 	public void setup(int index, String imageName, boolean collision) {
 		
@@ -84,7 +95,7 @@ public class TileManager {
 			
 		}catch(IOException e) {
 			e.printStackTrace();
-			System.out.println("In TileManager!");
+//			System.out.println("In TileManager!");
 		}
 	}
 	public void loadMap(String filePath) {
@@ -112,7 +123,9 @@ public class TileManager {
 			}
 			br.close();
 			
-		}catch(Exception e) {}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	public void draw(Graphics2D g2) {
 
@@ -131,7 +144,13 @@ public class TileManager {
 			   worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
 			   worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 			   worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-				
+				if (tile[tileNum] == null) {
+				    System.out.println(
+				        "NULL TILE! tileNum=" + tileNum +
+				        " worldCol=" + worldCol +
+				        " worldRow=" + worldRow
+				    );
+				}
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}
 			worldCol++;
