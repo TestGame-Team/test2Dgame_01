@@ -22,7 +22,7 @@ public class UI {
 	public String currentDialogue;
 	public int titleScreenState = 0;
 	public int commandNum = 0;
-	public int msgCounter = 0;
+	int msgCounter = 0;
 
 	
 	public UI(GamePanel gp) {
