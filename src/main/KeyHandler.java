@@ -28,6 +28,9 @@ public class KeyHandler implements KeyListener{
 				}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.ui.commandNum++;
 					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
+				}else if(code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_LEFT) {
+					//DEBUG
+					System.out.println("NO issues here!");
 				}else if(code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) gp.ui.titleScreenState = 1; gp.playMusic(0); // gp.gameState = gp.playState
 					if(gp.ui.commandNum == 1) {}

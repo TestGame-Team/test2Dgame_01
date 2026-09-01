@@ -3,8 +3,10 @@ package main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-/*import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
+import java.awt.image.BufferedImage;
+import object.OBJ_Heart;
+import object.SuperObject;
+/*import java.text.DecimalFormat;
 import object.OBJ_Key;*/
 
 public class UI {
@@ -12,6 +14,7 @@ public class UI {
 	GamePanel gp;
 	Graphics2D g2;
 	Font font1, font2, font3, font4, font5, font6, font7;
+	BufferedImage heart_full, heart_half, heart_blank;
 	/*
 	 * BufferedImage keyImage; DecimalFormat dFormat = new DecimalFormat("#0.00");
 	 * double playTime = 0;
@@ -35,6 +38,12 @@ public class UI {
 		font6 = new Font("Trebuchet MS", Font.PLAIN, 20);
 //		OBJ_Key key = new OBJ_Key(gp);
 //		keyImage = key.image;
+		//HUD OBJECT
+		SuperObject heart = new OBJ_Heart(gp);
+		heart_full = heart.image;
+		heart_half = heart.image2;
+		heart_blank = heart.image3;
+		
 	}
 	public void showMessage(String text) {
 		message = text;
@@ -73,11 +82,12 @@ public class UI {
 		g2.setFont(font5);
 		g2.setColor(Color.white);
 		if(gp.gameState == gp.playState) {
-			
-			//PLACEHOLDER
+			drawPlayerLife();
 		}else if(gp.gameState == gp.pauseState) {
+			drawPlayerLife();
 			drawPauseScreen();
 		}else if(gp.gameState == gp.dialogueState) {
+			drawPlayerLife();
 			drawDialogueScreen();
 		}else if(gp.gameState == gp.titleState) {
 			drawTitleScreen();
@@ -118,6 +128,43 @@ public class UI {
 		Color c = new Color(0,0,0,150);
 		g2.setColor(c);
 		g2.fillRoundRect(x, y, width, height, 36, 36);
+	}
+	public void drawPlayerLife() {
+		//DEBUG
+//		gp.player.life = 6;
+		
+		//INITIALIZE
+		int x = gp.tileSize/2;
+		int y = gp.tileSize/2;
+		int pl = 0;
+		
+		
+		/*
+		 * while (pl < gp.player.maxLife/2) { g2.drawImage(heart_blank, x, y, null);
+		 * pl++; x += gp.tileSize; }
+		 * 
+		 * //RESET x = gp.tileSize/2; y = gp.tileSize/2; pl = 0;
+		 * 
+		 * 
+		 * //DRAW CURRENT while(pl < gp.player.life ) { g2.drawImage(heart_half, x, y,
+		 * null); pl++; if(pl < gp.player.life) { g2.drawImage(heart_full, x, y, null);
+		 * pl++; } x += gp.tileSize; }
+		 */
+		 
+		
+		//DRAW CURRENT
+		for (pl = 0; pl < gp.player.maxLife / 2; pl++) {
+		    g2.drawImage(heart_blank, x, y, null);
+
+		    if (gp.player.life >= (pl * 2) + 2) {
+		        g2.drawImage(heart_full, x, y, null);
+		    } else if (gp.player.life == (pl * 2) + 1) {
+		        g2.drawImage(heart_half, x, y, null);
+		    }
+
+		    x += gp.tileSize;
+		}
+
 	}
 	public void drawTitleScreen() {
 		if(titleScreenState == 0) {
