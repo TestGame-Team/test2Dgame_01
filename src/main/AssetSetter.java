@@ -6,6 +6,8 @@ import object.OBJ_Door;
 import object.OBJ_GBox;
 import object.OBJ_Key;*/
 
+//Currently inactive --pending implementation
+
 public class AssetSetter {
 
 	GamePanel gp;
