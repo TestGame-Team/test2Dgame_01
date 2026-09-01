@@ -3,23 +3,27 @@ package main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-//import java.awt.image.BufferedImage;
-//import java.text.DecimalFormat;
-//import object.OBJ_Key;
+/*import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
+import object.OBJ_Key;*/
 
 public class UI {
 
 	GamePanel gp;
 	Graphics2D g2;
 	Font font1, font2, font3, font4, font5, font6, font7;
-//	BufferedImage keyImage;
+	/*
+	 * BufferedImage keyImage; DecimalFormat dFormat = new DecimalFormat("#0.00");
+	 * double playTime = 0;
+	 */
 	public boolean messageOn = false;
 	public boolean gameFinish = false;
 	public String message;
 	public String currentDialogue;
-//	double playTime = 0;
+	public int titleScreenState = 0;
+	public int commandNum = 0;
 	int msgCounter = 0;
-//	DecimalFormat dFormat = new DecimalFormat("#0.00");
+
 	
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -116,36 +120,75 @@ public class UI {
 		g2.fillRoundRect(x, y, width, height, 36, 36);
 	}
 	public void drawTitleScreen() {
-		//TITLE NAME
-		g2.setColor(new Color(50, 100, 50));
-		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-		//background and text
-		g2.setFont(font6.deriveFont(Font.BOLD, 75F));
-		g2.setColor(Color.yellow);
-		String text = "Blue Boy Adventure";
-		int x = getXforCenteredText(text);
-		int y = gp.tileSize*3;
-		//text shadow effect
-		g2.drawString(text, x+2, y+3);
-		g2.setColor(Color.cyan);
-		g2.drawString(text, x, y);
-		//background image
-		x = gp.screenWidth/2 - (gp.tileSize*2)/2;
-		y += gp.tileSize;
-		g2.drawImage(gp.player.down2, x, y, gp.tileSize*2, gp.tileSize*2, null);
-		//menu
-		g2.setFont(font5.deriveFont(Font.BOLD, 45F));
-		g2.setColor(Color.white);
-		text = "NEW GAME";
-		x = getXforCenteredText(text);
-		y += gp.tileSize*3.8;
-		g2.drawRect(gp.tileSize, gp.tileSize*7, gp.tileSize*14, gp.tileSize*4);
-		g2.drawString(text, x, y);
-		text = "LOAD GAME";
-		g2.drawString(text, x, y+gp.tileSize);
-		text = "OPTIONS";
-		g2.drawString(text, x, y+gp.tileSize*2);
-		text = "QUIT";
-		g2.drawString(text, x, y+gp.tileSize*3);
+		if(titleScreenState == 0) {
+			//TITLE NAME
+			g2.setColor(new Color(50, 100, 50));
+			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+			//background and text
+			g2.setFont(font6.deriveFont(Font.BOLD, 75F));
+			g2.setColor(Color.yellow);
+			String text = "Blue Boy Adventure";
+			int x = getXforCenteredText(text);
+			int y = gp.tileSize*3;
+			//text shadow effect
+			g2.drawString(text, x+2, y+3);
+			g2.setColor(Color.cyan);
+			g2.drawString(text, x, y);
+			//background image
+			x = gp.screenWidth/2 - (gp.tileSize*2)/2;
+			y += gp.tileSize;
+			g2.drawImage(gp.player.down1, x, y, gp.tileSize*2, gp.tileSize*2, null);
+			//menu
+			g2.setFont(font5.deriveFont(Font.BOLD, 45F));
+			g2.setColor(Color.white);
+			text = "NEW GAME";
+			x = getXforCenteredText(text);
+			y += gp.tileSize*3.8;
+			g2.drawRect(gp.tileSize, gp.tileSize*7, gp.tileSize*14, gp.tileSize*4);
+			g2.drawString(text, x, y);
+			if(commandNum == 0) {
+				g2.drawString(">", x-gp.tileSize, y); //can use drawImage instead of drawString
+			}
+			text = "LOAD GAME";
+			g2.drawString(text, x, y+gp.tileSize);
+			if(commandNum == 1) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize); //can use drawImage instead of drawString
+			}
+			text = "OPTIONS";
+			g2.drawString(text, x, y+gp.tileSize*2);
+			if(commandNum == 2) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*2); //can use drawImage instead of drawString
+			}
+			text = "QUIT";
+			g2.drawString(text, x, y+gp.tileSize*3);
+			if(commandNum == 3) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*3); //can use drawImage instead of drawString
+			}
+		}
+		else if(titleScreenState == 1) {
+			//CLASS SELECTION
+			g2.setColor(Color.white);
+			g2.setFont(font6.deriveFont(42F));
+			String text = "Select your class!";
+			int x = getXforCenteredText(text);
+			int y = gp.tileSize*2;
+			g2.drawString(text, x, y);
+			g2.drawString("Fighter", x, y+gp.tileSize*2);
+			if(commandNum == 0) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*2);
+			}
+			g2.drawString("Ninja", x, y+gp.tileSize*3);
+			if(commandNum == 1) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*3);
+			}
+			g2.drawString("Mage", x, y+gp.tileSize*4);
+			if(commandNum == 2) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*4);
+			}
+			g2.drawString("Back", x, y+gp.tileSize*6);
+			if(commandNum == 3) {
+				g2.drawString(">", x-gp.tileSize, y+gp.tileSize*6);
+			}
+		}
 	}
 }
