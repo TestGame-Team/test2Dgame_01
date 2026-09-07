@@ -150,6 +150,7 @@ public class TileManager {
 				        " worldCol=" + worldCol +
 				        " worldRow=" + worldRow
 				    );
+				    System.exit(0);
 				}
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 			}

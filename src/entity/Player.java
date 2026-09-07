@@ -83,6 +83,8 @@ public class Player extends Entity{
 		pickUpObject(objIndex);
 		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 		interactNPC(npcIndex);
+		gp.eHandler.checkEvent();
+		gp.keyH.enterPressed = false;
 		
 		if(collisionOn == false) {
 			switch(direction) {
@@ -141,7 +143,6 @@ public class Player extends Entity{
 				gp.npc[i].speak();
 			}
 		}
-		gp.keyH.enterPressed = false;
 	}
 	public void draw(Graphics2D g2) {
 //		g2.setColor(Color.white); g2.fillRect(x, y, gp.tileSize, gp.tileSize);

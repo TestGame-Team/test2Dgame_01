@@ -69,7 +69,7 @@ public class Entity {
 				break;
 			}
 		}
-
+    
 		spriteCounter++;
 		if(spriteCounter > 12) {
 			if(spriteNum == 1) {
@@ -127,7 +127,6 @@ public class Entity {
 				}
 				break;
 			}
-			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		}
 	}
