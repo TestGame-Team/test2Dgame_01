@@ -5,9 +5,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import object.OBJ_Heart;
-import object.SuperObject;
+import entity.Entity;
+
 /*import java.text.DecimalFormat;
-import object.OBJ_Key;*/
+import object.OBJ_Heart;
+import object.SuperObject;
+*/
 
 public class UI {
 
@@ -36,10 +39,11 @@ public class UI {
 		font4 = new Font("Calibri", Font.PLAIN, 20);
 		font5 = new Font("Segoe UI", Font.PLAIN, 20);
 		font6 = new Font("Trebuchet MS", Font.PLAIN, 20);
-//		OBJ_Key key = new OBJ_Key(gp);
-//		keyImage = key.image;
+		/*
+		 * OBJ_Key key = new OBJ_Key(gp); keyImage = key.image;
+		 */		
 		//HUD OBJECT
-		SuperObject heart = new OBJ_Heart(gp);
+		Entity heart = new OBJ_Heart(gp);
 		heart_full = heart.image;
 		heart_half = heart.image2;
 		heart_blank = heart.image3;

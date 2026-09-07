@@ -1,19 +1,15 @@
 package object;
 
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import entity.Entity;
 import main.GamePanel;
 
-public class OBJ_GBox extends SuperObject{
+public class OBJ_GBox extends Entity{
 
-	GamePanel gp;
 	public OBJ_GBox(GamePanel gp) {
-		name = "GBox";
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/objects/chest.png"));
-			uTool.scaleImage(image, gp.tileSize, gp.tileSize);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
+		
+		super(gp);
+		name = "Box";
+		image = setup("/objects/chest");
+		collision = true;
 	}
 }

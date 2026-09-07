@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.*;
 import javax.swing.JPanel;
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
+//import object.SuperObject;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -40,9 +41,10 @@ public class GamePanel extends JPanel implements Runnable{
 	Thread gameThread;
 	
 	//ENTITY & OBJECT
-	public Player player = new Player(this, keyH);   // Player
-	public SuperObject obj[] = new SuperObject[10];  // How Many Objects At A Time
-	public Entity npc[] = new Entity[10];
+	public Player player = new Player(this, keyH);    // Player
+	public Entity obj[] = new Entity[10];  			  // How Many Objects At A Time
+	public Entity npc[] = new Entity[10];  		 	  // How Many Characters At A Time
+	ArrayList<Entity> entityList = new ArrayList<>(); // Entity Order Management
 	
 	
 	//GAME STATE
@@ -126,23 +128,48 @@ public class GamePanel extends JPanel implements Runnable{
 		}else {
 			//TILE
 			tileM.draw(g2);
-			//OBJECT
-			for(int i=0; i<obj.length; i++) {
-				if(obj[i] != null) {
-					obj[i].draw(g2, this);
-				}
-			}
-			//NPC
+			
+			//ENTITY
+			entityList.add(player);
 			for(int i=0; i<npc.length; i++) {
 				if(npc[i] != null) {
-					npc[i].draw(g2);
+					entityList.add(npc[i]);
 				}
 			}
-			//PLAYER
-			player.draw(g2);
+			for(int i=0; i<obj.length; i++) {
+				if(obj[i] != null) {
+					entityList.add(obj[i]);
+				}
+			}
+			
+			//SORT
+			Collections.sort(entityList, new Comparator<Entity>() {
+				@Override
+				public int compare(Entity e1, Entity e2) {
+					int result = Integer.compare(e1.worldY, e2.worldY);
+					return result;
+				}
+			});
+			
+			//DRAW
+			for(int i=0; i<entityList.size(); i++) {
+				entityList.get(i).draw(g2);
+			}
+			
+			//EMPTY
+			for(int i=0; i<entityList.size(); i++) {
+				entityList.remove(i);
+			}
+			
 			//UI
 			ui.draw(g2);
 			g2.dispose();
+			/* for(int i=0; i<obj.length; i++) { if(obj[i] != null) {
+			 * obj[i].draw(g2, this); } } //NPC 
+			 * for(int i=0; i<npc.length; i++) { if(npc[i]
+			 * != null) { npc[i].draw(g2); } } //PLAYER 
+			 * player.draw(g2);
+			 */	
 		}
 		//DEBUG
 		if(keyH.debugPressed) {

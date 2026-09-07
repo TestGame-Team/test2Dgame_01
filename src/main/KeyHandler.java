@@ -29,7 +29,7 @@ public class KeyHandler implements KeyListener{
 					gp.ui.commandNum++;
 					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
 				}else if(code == KeyEvent.VK_ENTER) {
-					if (gp.ui.commandNum == 0) gp.ui.titleScreenState = 1; gp.playMusic(0); // gp.gameState = gp.playState
+					if (gp.ui.commandNum == 0) gp.ui.titleScreenState = 1; //gp.playMusic(0);
 					if(gp.ui.commandNum == 1) {}
 					if(gp.ui.commandNum == 2) {}
 					if(gp.ui.commandNum == 3) System.exit(0);
@@ -49,7 +49,7 @@ public class KeyHandler implements KeyListener{
 					if (gp.ui.commandNum == 0) {System.out.println("Fighter Selected!"); gp.gameState = gp.playState;}
 					if(gp.ui.commandNum == 1) {System.out.println("Ninja Selected!"); gp.gameState = gp.playState;}
 					if(gp.ui.commandNum == 2) {System.out.println("Mage Selected!"); gp.gameState = gp.playState;}
-					if(gp.ui.commandNum == 3) {gp.ui.titleScreenState = 0; gp.ui.commandNum = 0; gp.stopMusic();}
+					if (gp.ui.commandNum == 3) {gp.ui.titleScreenState = 0;	gp.ui.commandNum = 0; gp.stopMusic();}
 				}
 			}
 		}
