@@ -11,8 +11,8 @@ import main.UtilityTool;
 public class Entity {
 
 	GamePanel gp;
-	public int worldX, worldY;
 	public int speed;
+	public int worldX, worldY;
 	public BufferedImage up1, up2, down1, down2, right1, right2, left1, left2, image, image2, image3;
 	public String direction = "down";
 	public int spriteCounter = 0;
