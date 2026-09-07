@@ -16,8 +16,8 @@ public class Entity {
 	public BufferedImage up1, up2, down1, down2, right1, right2, left1, left2, image, image2, image3;
 	public String direction = "down";
 	public int spriteCounter = 0;
-	public int dialogueIndex = 0;
 	public int spriteNum = 1;
+	public int dialogueIndex = 0;
 	public Rectangle solidArea = new Rectangle(0, 0, 45, 45);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collisionOn = false;
