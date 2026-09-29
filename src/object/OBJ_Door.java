@@ -9,7 +9,7 @@ public class OBJ_Door extends Entity{
 		
 		super(gp);
 		name = "Door";
-		down2 = setup("/objects/door");
+		down2 = setup("/objects/door", gp.tileSize, gp.tileSize);
 		collision = true;
 		
 		solidArea.x = 0;

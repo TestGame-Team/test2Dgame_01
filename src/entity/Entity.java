@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,20 +12,26 @@ import main.UtilityTool;
 public class Entity {
 
 	GamePanel gp;
+	public BufferedImage attackU1, attackU2, attackD1, attackD2, attackR1, attackR2, attackL1, attackL2;
 	public BufferedImage up1, up2, down1, down2, right1, right2, left1, left2, image, image2, image3;
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public int actionLockCounter = 0;
 	public int invincibleCounter = 0;
 	public int dialogueIndex = 0;
 	public int spriteCounter = 0;
+	public int nonCounter = 0;
 	public int worldX, worldY;
 	public int spriteNum = 1;
 	public int speed;
 	public int type;			// 0 = player; 1 = npc; 2 = monster;
 	public Rectangle solidArea = new Rectangle(0, 0, 45, 45);
+	public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	public boolean collisionOn = false;
 	public boolean invincible = false;
 	public boolean collision = false;
+	public boolean attacking = false;
+	public boolean alive = true;
+	public boolean non = false;
 	public String dialogues[] = new String[20];
 	public String direction = "down";
 	public String name;
@@ -62,9 +69,17 @@ public class Entity {
 		boolean interactPlayer = gp.cChecker.checkPlayer(this);
 		
 		if(this.type == 2 && interactPlayer) {
-			if(!invincible) {
-				gp.player.life -= 1;
+			if(!gp.player.invincible) {
+				gp.player.life--;
 				gp.player.invincible = true;
+			}
+		}
+		
+		if(invincible) {
+			invincibleCounter++;
+			if(invincibleCounter > 30) {
+				invincible = false;
+				invincibleCounter = 0;
 			}
 		}
 		
@@ -142,16 +157,48 @@ public class Entity {
 				}
 				break;
 			}
+			if(invincible) {
+				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+			}
+			if(non) {
+				nonAnimation(g2);
+			}
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		}
 	}
 	
-	public BufferedImage setup(String imagePath) {
+	public void nonAnimation(Graphics2D g2) {
+		
+		nonCounter++;
+		
+		if(nonCounter <= 5) {
+			changeAV(g2, 0.4f);		}
+		else if(nonCounter > 5 && nonCounter <= 20) {
+			changeAV(g2, 1f);		}
+		else if(nonCounter > 20 && nonCounter <= 40) {
+			changeAV(g2, 0.4f);		}
+		else if(nonCounter > 40 && nonCounter <= 60) {
+			changeAV(g2, 1f);		}
+		else if(nonCounter > 60 && nonCounter <= 70) {
+			changeAV(g2, 0.4f);		}
+		else {
+			non = false;
+			alive = false;
+		}
+	}
+	
+	public void changeAV(Graphics2D g2, float AV) {
+		
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, AV));
+	}
+	
+	public BufferedImage setup(String imagePath, int width, int height) {
 		UtilityTool uTool = new UtilityTool();
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(imagePath+".png"));
-			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+			image = uTool.scaleImage(image, width, height);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

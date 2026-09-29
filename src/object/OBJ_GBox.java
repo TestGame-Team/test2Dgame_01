@@ -9,7 +9,7 @@ public class OBJ_GBox extends Entity{
 		
 		super(gp);
 		name = "Box";
-		image = setup("/objects/chest");
+		image = setup("/objects/chest", gp.tileSize, gp.tileSize);
 		collision = true;
 	}
 }
