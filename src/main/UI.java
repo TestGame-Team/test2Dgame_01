@@ -142,7 +142,6 @@ public class UI {
 		int y = gp.tileSize/2;
 		int pl = 0;
 		
-		
 		/*
 		 * while (pl < gp.player.maxLife/2) { g2.drawImage(heart_blank, x, y, null);
 		 * pl++; x += gp.tileSize; }
@@ -154,8 +153,7 @@ public class UI {
 		 * null); pl++; if(pl < gp.player.life) { g2.drawImage(heart_full, x, y, null);
 		 * pl++; } x += gp.tileSize; }
 		 */
-		 
-		
+
 		//DRAW CURRENT
 		for (pl = 0; pl < gp.player.maxLife / 2; pl++) {
 		    g2.drawImage(heart_blank, x, y, null);
@@ -165,10 +163,8 @@ public class UI {
 		    } else if (gp.player.life == (pl * 2) + 1) {
 		        g2.drawImage(heart_half, x, y, null);
 		    }
-
 		    x += gp.tileSize;
 		}
-
 	}
 	public void drawTitleScreen() {
 		if(titleScreenState == 0) {

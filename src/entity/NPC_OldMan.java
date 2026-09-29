@@ -27,7 +27,7 @@ public class NPC_OldMan extends Entity{
 	public void setAction() {
 		
 		actionLockCounter++;
-		if(actionLockCounter >= 150) {
+		if(actionLockCounter >= 180) {
 			
 			Random random = new Random();
 			int i = random.nextInt(100)+1;
