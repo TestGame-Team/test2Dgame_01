@@ -55,6 +55,9 @@ public class Entity {
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
 		gp.cChecker.checkPlayer(this);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.monster);
+
 		if(collisionOn == false) {
 			switch(direction) {
 			case "up"   :

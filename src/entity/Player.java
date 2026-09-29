@@ -83,6 +83,8 @@ public class Player extends Entity{
 		pickUpObject(objIndex);
 		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
 		interactNPC(npcIndex);
+		int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+		interactMonster(monsterIndex);
 		gp.eHandler.checkEvent();
 		gp.keyH.enterPressed = false;
 		
@@ -133,7 +135,7 @@ public class Player extends Entity{
 			 * speed += 2; gp.obj[i] = null; gp.ui.showMessage("You got Speed Boost! ! !");
 			 * break;
 			 */
-			
+
 		}
 	}
 	public void interactNPC(int i) {
@@ -143,6 +145,10 @@ public class Player extends Entity{
 				gp.npc[i].speak();
 			}
 		}
+	}
+	public void interactMonster(int i) {
+
+		
 	}
 	public void draw(Graphics2D g2) {
 //		g2.setColor(Color.white); g2.fillRect(x, y, gp.tileSize, gp.tileSize);

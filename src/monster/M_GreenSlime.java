@@ -20,6 +20,9 @@ public class M_GreenSlime extends Entity{
 		solidArea.height = 30;
 		solidAreaDefaultX = solidArea.x;
 		solidAreaDefaultY = solidArea.y;
+		
+		getImage();
+		
 	}
 	public void getImage() {
 		
