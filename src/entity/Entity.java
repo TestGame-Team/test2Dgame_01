@@ -11,19 +11,22 @@ import main.UtilityTool;
 public class Entity {
 
 	GamePanel gp;
-	public int speed;
-	public int worldX, worldY;
-	public int spriteCounter = 0;
-	public int spriteNum = 1;
 	public BufferedImage up1, up2, down1, down2, right1, right2, left1, left2, image, image2, image3;
-	public String direction = "down";
-	public int dialogueIndex = 0;
-	public Rectangle solidArea = new Rectangle(0, 0, 45, 45);
 	public int solidAreaDefaultX, solidAreaDefaultY;
-	public boolean collisionOn = false;
 	public int actionLockCounter = 0;
-	public String dialogues[] = new String[20];
+	public int invincibleCounter = 0;
+	public int dialogueIndex = 0;
+	public int spriteCounter = 0;
+	public int worldX, worldY;
+	public int spriteNum = 1;
+	public int speed;
+	public int type;			// 0 = player; 1 = npc; 2 = monster;
+	public Rectangle solidArea = new Rectangle(0, 0, 45, 45);
+	public boolean collisionOn = false;
+	public boolean invincible = false;
 	public boolean collision = false;
+	public String dialogues[] = new String[20];
+	public String direction = "down";
 	public String name;
 	
 	//PLAYER STATUS
@@ -54,10 +57,17 @@ public class Entity {
 		collisionOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
-		gp.cChecker.checkPlayer(this);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.monster);
-
+		boolean interactPlayer = gp.cChecker.checkPlayer(this);
+		
+		if(this.type == 2 && interactPlayer) {
+			if(!invincible) {
+				gp.player.life -= 1;
+				gp.player.invincible = true;
+			}
+		}
+		
 		if(collisionOn == false) {
 			switch(direction) {
 			case "up"   :

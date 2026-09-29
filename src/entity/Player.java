@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.AlphaComposite;
 //import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -26,6 +27,8 @@ public class Player extends Entity{
 		
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+		
+		type = 0;
 		
 		solidArea = new Rectangle();
 		solidArea.x = 10;
@@ -61,6 +64,14 @@ public class Player extends Entity{
 	}
 
 	public void update() {
+		
+		if(invincible) {
+			invincibleCounter++;
+			if(invincibleCounter > 60) {
+				invincible = false;
+				invincibleCounter = 0;
+			}
+		}
 		
 		if(keyH.upPressed == true || keyH.downPressed == true ||
 		   keyH.rightPressed == true || keyH.leftPressed == true) {
@@ -148,7 +159,12 @@ public class Player extends Entity{
 	}
 	public void interactMonster(int i) {
 
-		
+		if(i != 1000) {
+			if(!invincible) {
+				life -= 1;
+				invincible = true;
+			}
+		}
 	}
 	public void draw(Graphics2D g2) {
 //		g2.setColor(Color.white); g2.fillRect(x, y, gp.tileSize, gp.tileSize);
@@ -188,6 +204,11 @@ public class Player extends Entity{
 			}
 			break;
 		}
+		if(invincible) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+		}
 		g2.drawImage(image, screenX, screenY, null);
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
 	}
 }
