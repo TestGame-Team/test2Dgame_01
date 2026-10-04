@@ -108,6 +108,7 @@ public class KeyHandler implements KeyListener{
 					}
 				}
 			}
+		}
 		
 		//PLAY STATE
 		else if(gp.gameState == gp.playState) {
