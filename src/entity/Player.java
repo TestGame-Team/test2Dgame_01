@@ -59,9 +59,8 @@ public class Player extends Entity{
 		life = maxLife;
 	}
 	public void setAvatar(int avatarIndex) {
-		if (avatarIndex < 0 || avatarIndex >= PlayerAvatar.values().length) {
-			avatarIndex = 0;
-		}
+		int avatarCount = PlayerAvatar.values().length;
+		avatarIndex = (avatarIndex % avatarCount + avatarCount) % avatarCount;
 		this.avatarIndex = avatarIndex;
 		loadAvatarImages(PlayerAvatar.values()[avatarIndex]);
 	}
