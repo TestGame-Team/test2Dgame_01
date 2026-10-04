@@ -15,6 +15,13 @@ public class KeyHandler implements KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
+
+	public void clearMovementKeys() {
+		upPressed = false;
+		downPressed = false;
+		rightPressed = false;
+		leftPressed = false;
+	}
 	@Override
 	public void keyPressed(KeyEvent e) {
 
@@ -112,13 +119,13 @@ public class KeyHandler implements KeyListener{
 		
 		//PLAY STATE
 		else if(gp.gameState == gp.playState) {
-			if(code == KeyEvent.VK_W) {
+			if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				upPressed = true;
-			}else if(code == KeyEvent.VK_S) {
+			}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				downPressed = true;
-			}else if(code == KeyEvent.VK_D) {
+			}else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				rightPressed = true;
-			}else if(code == KeyEvent.VK_A) {
+			}else if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				leftPressed = true;
 			}else if(code == KeyEvent.VK_T) {
 				debugPressed = true;
@@ -181,13 +188,13 @@ public class KeyHandler implements KeyListener{
 
 		int code = e.getKeyCode();
 		
-		if(code == KeyEvent.VK_W) {
+		if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 			upPressed = false;
-		}else if(code == KeyEvent.VK_S) {
+		}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 			downPressed = false;
-		}else if(code == KeyEvent.VK_D) {
+		}else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 			rightPressed = false;
-		}else if(code == KeyEvent.VK_A) {
+		}else if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 			leftPressed = false;
 		}else if(code == KeyEvent.VK_T) {
 			debugPressed = false;
