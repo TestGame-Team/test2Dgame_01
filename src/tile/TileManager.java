@@ -99,6 +99,10 @@ public class TileManager {
         worldMap.load(filePath);
     }
 
+    public int getTileId(int col, int row) {
+        return worldMap.getTileId(col, row);
+    }
+
     public void draw(Graphics2D g2) {
 
         int worldCol = 0;
