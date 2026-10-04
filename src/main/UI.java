@@ -241,6 +241,32 @@ public class UI {
             drawTitleMenuItem("OPTIONS", getXforCenteredText("OPTIONS"), menuTop + menuStep * 3, 2, pulse);
             drawTitleMenuItem("EXIT", getXforCenteredText("EXIT"), menuTop + menuStep * 4, 3, pulse);
 
+        } else if (titleScreenState == 2) {
+            // LOAD GAME
+            g2.setFont(font2.deriveFont(Font.BOLD, 46F));
+            String text = "Load Game";
+            int x = getXforCenteredText(text);
+            int y = gp.tileSize * 2;
+
+            g2.setColor(new Color(0, 10, 15, 150));
+            g2.drawString(text, x + 4, y + 5);
+
+            g2.setColor(new Color(220, 245, 250));
+            g2.drawString(text, x, y);
+
+            g2.setFont(font5.deriveFont(Font.BOLD, 27F));
+            for (int i = 0; i < 3; i++) {
+                String slotText = gp.saveManager.getSlotLabel(i + 1);
+                int slotY = y + gp.tileSize * (2 + i);
+                drawTitleMenuItem(slotText, getXforCenteredText(slotText),
+                        slotY, i, pulse);
+            }
+
+            String backText = "Back";
+            int backY = y + gp.tileSize * 6;
+            drawTitleMenuItem(backText, getXforCenteredText(backText),
+                    backY, 3, pulse);
+
         } else if (titleScreenState == 1) {
             // CLASS SELECTION
             g2.setFont(font2.deriveFont(Font.BOLD, 46F));
