@@ -117,7 +117,6 @@ public class Player extends Entity{
 		attackL2 = walkFrames[1][2];
 	}
 	public void update() {
-		
 		if(invincible) {
 			invincibleCounter++;
 			if(invincibleCounter > 60) {
@@ -125,63 +124,61 @@ public class Player extends Entity{
 				invincibleCounter = 0;
 			}
 		}
+
 		if(attacking) {
 			attacking();
+			return;
 		}
-		else if(keyH.upPressed || keyH.downPressed || keyH.rightPressed || keyH.leftPressed || keyH.enterPressed) {
-			if(keyH.upPressed == true) {
+
+		boolean moving = keyH.upPressed || keyH.downPressed
+				|| keyH.rightPressed || keyH.leftPressed;
+
+		if(moving || keyH.enterPressed) {
+			if(keyH.upPressed) {
 				direction = "up";
-			}
-			else if(keyH.downPressed == true) {
+			} else if(keyH.downPressed) {
 				direction = "down";
-			}
-			else if(keyH.rightPressed == true) {
+			} else if(keyH.rightPressed) {
 				direction = "right";
-			}
-			else if(keyH.leftPressed == true) {
+			} else if(keyH.leftPressed) {
 				direction = "left";
 			}
-		
-		collisionOn = false;
-		gp.cChecker.checkTile(this);
-		int objIndex = gp.cChecker.checkObject(this, true);
-		pickUpObject(objIndex);
-		int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
-		interactNPC(npcIndex);
-		int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-		interactMonster(monsterIndex);
-		gp.eHandler.checkEvent();
-		
-		if(collisionOn == false && !keyH.enterPressed) {
-			switch(direction) {
-			case "up"   :
-				worldY -= speed;
-				break;
-			case "down" :
-				worldY += speed;
-				break;
-			case "right":
-				worldX += speed;
-				break;
-			case "left" :
-				worldX -= speed;
-				break;
+
+			collisionOn = false;
+			gp.cChecker.checkTile(this);
+			int objIndex = gp.cChecker.checkObject(this, true);
+			pickUpObject(objIndex);
+			int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+			interactNPC(npcIndex);
+			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+			interactMonster(monsterIndex);
+			gp.eHandler.checkEvent();
+
+			if(collisionOn == false && !keyH.enterPressed) {
+				switch(direction) {
+				case "up":    worldY -= speed; break;
+				case "down":  worldY += speed; break;
+				case "right": worldX += speed; break;
+				case "left":  worldX -= speed; break;
+				}
 			}
 		}
-		gp.keyH.enterPressed = false;
-		boolean moving = keyH.upPressed || keyH.downPressed || keyH.rightPressed || keyH.leftPressed;
-		if (moving) {
+
+		// Enter is a one-frame interaction input.
+		keyH.enterPressed = false;
+
+		if(moving) {
 			standCounter = 0;
 			spriteCounter++;
-			if (spriteCounter > 8) {
+			if(spriteCounter > 8) {
 				spriteNum++;
-				if (spriteNum > 4) spriteNum = 1;
+				if(spriteNum > 4) spriteNum = 1;
 				spriteCounter = 0;
 			}
 		} else {
 			standCounter++;
 			spriteNum = 1;
-			if (standCounter > 20) standCounter = 0;
+			if(standCounter > 20) standCounter = 0;
 		}
 	}
 	public void pickUpObject(int i) {
