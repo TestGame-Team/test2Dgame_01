@@ -90,6 +90,21 @@ public final class SaveManager {
         }
     }
 
+    /** Clears the first occupied slot in slot order: 1, then 2, then 3. */
+    public int clearNextSlot() {
+        for (int slot = 1; slot <= SLOT_COUNT; slot++) {
+            if (hasSave(slot)) {
+                try {
+                    Files.deleteIfExists(slotPath(slot));
+                    return slot;
+                } catch (IOException e) {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    }
+
     public boolean hasSave(int slot) {
         return isValidSlot(slot) && Files.exists(slotPath(slot));
     }
