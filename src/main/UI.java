@@ -95,10 +95,11 @@ public class UI {
         g2.setFont(font5.deriveFont(Font.BOLD, 28F));
 
         if (pauseScreenState == 0) {
-            drawPauseMenuItem("OPTIONS", 0);
-            drawPauseMenuItem("SAVE GAME", 1);
-            drawPauseMenuItem("HELP", 2);
-            drawPauseMenuItem("EXIT TO MAIN MENU", 3);
+            drawPauseMenuItem("RESUME", 0);
+            drawPauseMenuItem("OPTIONS", 1);
+            drawPauseMenuItem("SAVE GAME", 2);
+            drawPauseMenuItem("HELP", 3);
+            drawPauseMenuItem("EXIT TO MAIN MENU", 4);
         } else if (pauseScreenState == 1) {
             drawCenteredPauseText("OPTIONS");
             drawCenteredPauseText("Press ESC to return.");
@@ -262,10 +263,14 @@ public class UI {
                         slotY, i, pulse);
             }
 
+            String clearText = "Clear Slot";
+            int clearY = y + gp.tileSize * 5;
+            drawTitleMenuItem(clearText, getXforCenteredText(clearText), clearY, 3, pulse);
+
             String backText = "Back";
             int backY = y + gp.tileSize * 6;
             drawTitleMenuItem(backText, getXforCenteredText(backText),
-                    backY, 3, pulse);
+                    backY, 4, pulse);
 
         } else if (titleScreenState == 1) {
             // CLASS SELECTION
