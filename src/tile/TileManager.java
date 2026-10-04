@@ -1,7 +1,6 @@
 package tile;
 
 import java.awt.Graphics2D;
-
 import content.AssetManager;
 import main.GamePanel;
 import world.WorldMap;
