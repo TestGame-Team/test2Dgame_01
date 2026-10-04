@@ -79,8 +79,43 @@ public class KeyHandler implements KeyListener{
 		}
 		//PAUSE STATE
 		else if(gp.gameState == gp.pauseState) {
-			if(code == KeyEvent.VK_P)
-			gp.gameState = gp.playState;
+			if(code == KeyEvent.VK_P) {
+				gp.gameState = gp.playState;
+			} else if(code == KeyEvent.VK_ESCAPE) {
+				if(gp.ui.pauseScreenState != 0) {
+					gp.ui.pauseScreenState = 0;
+					gp.ui.commandNum = 0;
+				} else {
+					gp.gameState = gp.playState;
+				}
+			} else if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+				gp.ui.commandNum--;
+				if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
+			} else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				gp.ui.commandNum++;
+				if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
+			} else if(code == KeyEvent.VK_ENTER) {
+				if(gp.ui.pauseScreenState == 0) {
+					if(gp.ui.commandNum == 0) {
+						gp.ui.pauseScreenState = 1;
+						gp.ui.commandNum = 0;
+					} else if(gp.ui.commandNum == 1) {
+						int slot = gp.saveManager.saveGame();
+						gp.ui.showMessage("Game saved to Slot " + slot);
+					} else if(gp.ui.commandNum == 2) {
+						gp.ui.pauseScreenState = 2;
+						gp.ui.commandNum = 0;
+					} else if(gp.ui.commandNum == 3) {
+						gp.stopMusic();
+						gp.ui.titleScreenState = 0;
+						gp.ui.pauseScreenState = 0;
+						gp.ui.commandNum = 0;
+						gp.gameState = gp.titleState;
+					}
+				} else if(gp.ui.pauseScreenState == 1 || gp.ui.pauseScreenState == 2) {
+					// Options and Help are informational for now.
+				}
+			}
 		}
 	}
 	@Override
