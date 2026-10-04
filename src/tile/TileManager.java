@@ -1,28 +1,24 @@
 package tile;
 
 import java.awt.Graphics2D;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import content.AssetManager;
 import main.GamePanel;
+import world.WorldMap;
 
 public class TileManager {
 
 	GamePanel gp;
 	public Tile[] tile;
-	public int mapTileNum[][];
+	private final WorldMap worldMap;
 	
 	public TileManager(GamePanel gp) {
 		
 		this.gp = gp;
 		tile = new Tile[50];
-		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+		worldMap = new WorldMap(gp.maxWorldCol, gp.maxWorldRow);
 		
 		getTileImage();
-		loadMap("/maps/big-map_02.txt");
+		worldMap.load("/maps/big-map_02.txt");
 	}
 	public void getTileImage() {
 		
@@ -125,7 +121,7 @@ public class TileManager {
 		
 		while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 			
-			int tileNum = mapTileNum[worldCol][worldRow];
+			int tileNum = worldMap.getTileId(worldCol, worldRow);
 			int worldX = worldCol * gp.tileSize;
 			int worldY = worldRow * gp.tileSize;
 			int screenX = worldX - gp.player.worldX + gp.player.screenX;
