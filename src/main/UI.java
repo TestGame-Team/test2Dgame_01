@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import object.OBJ_Heart;
 import entity.Entity;
 
+//hi gpt :)
+
 public class UI {
 
     GamePanel gp;
