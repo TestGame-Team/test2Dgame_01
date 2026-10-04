@@ -27,7 +27,7 @@ public class KeyHandler implements KeyListener{
 					if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
 				}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.ui.commandNum++;
-					if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
+					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
 				}else if(code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) {
 						gp.ui.titleScreenState = 1;
@@ -128,7 +128,7 @@ public class KeyHandler implements KeyListener{
 				if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
 			} else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				gp.ui.commandNum++;
-				if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
+				if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
 			} else if(code == KeyEvent.VK_ENTER) {
 				if(gp.ui.pauseScreenState == 0) {
 					if(gp.ui.commandNum == 0) {
