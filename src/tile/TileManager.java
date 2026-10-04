@@ -8,17 +8,15 @@ import world.WorldMap;
 
 public class TileManager {
 
-    GamePanel gp;
-    public Tile[] tile;
+    private final GamePanel gp;
+    public final Tile[] tile;
     private final WorldMap worldMap;
 
-    public TileManager(GamePanel gp) {
+    public TileManager(GamePanel gp, WorldMap worldMap) {
         this.gp = gp;
+        this.worldMap = worldMap;
         tile = new Tile[50];
-        worldMap = new WorldMap(gp.maxWorldCol, gp.maxWorldRow);
-
         getTileImage();
-        loadMap("/maps/big-map_02.txt");
     }
 
     public void getTileImage() {
@@ -91,35 +89,35 @@ public class TileManager {
         tile[index].collision = collision;
     }
 
-    /**
-     * Loads map data through the dedicated WorldMap class.
-     * Kept as the TileManager entry point so existing code remains compatible.
-     */
-    public void loadMap(String filePath) {
-        worldMap.load(filePath);
-    }
-
     public int getTileId(int col, int row) {
         return worldMap.getTileId(col, row);
     }
 
     public void draw(Graphics2D g2) {
+        int startCol = Math.max(
+                0,
+                (gp.player.worldX - gp.player.screenX) / gp.tileSize
+        );
+        int endCol = Math.min(
+                gp.maxWorldCol - 1,
+                (gp.player.worldX + gp.player.screenX) / gp.tileSize + 1
+        );
+        int startRow = Math.max(
+                0,
+                (gp.player.worldY - gp.player.screenY) / gp.tileSize
+        );
+        int endRow = Math.min(
+                gp.maxWorldRow - 1,
+                (gp.player.worldY + gp.player.screenY) / gp.tileSize + 1
+        );
 
-        int worldCol = 0;
-        int worldRow = 0;
-
-        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-
-            int tileNum = worldMap.getTileId(worldCol, worldRow);
-            int worldX = worldCol * gp.tileSize;
-            int worldY = worldRow * gp.tileSize;
-            int screenX = worldX - gp.player.worldX + gp.player.screenX;
-            int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX
-                    && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX
-                    && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY
-                    && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+        for (int worldRow = startRow; worldRow <= endRow; worldRow++) {
+            for (int worldCol = startCol; worldCol <= endCol; worldCol++) {
+                int tileNum = worldMap.getTileId(worldCol, worldRow);
+                int worldX = worldCol * gp.tileSize;
+                int worldY = worldRow * gp.tileSize;
+                int screenX = worldX - gp.player.worldX + gp.player.screenX;
+                int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
                 if (tile[tileNum] == null) {
                     throw new IllegalStateException(
@@ -129,13 +127,6 @@ public class TileManager {
                 }
 
                 g2.drawImage(tile[tileNum].image, screenX, screenY, null);
-            }
-
-            worldCol++;
-
-            if (worldCol >= gp.maxWorldCol) {
-                worldCol = 0;
-                worldRow++;
             }
         }
     }
