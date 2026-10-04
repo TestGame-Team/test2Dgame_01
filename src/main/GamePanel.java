@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.*;
 import javax.swing.JPanel;
 import entity.Entity;
@@ -11,7 +13,7 @@ import entity.Player;
 import tile.TileManager;
 import world.WorldManager;
 
-public class GamePanel extends JPanel implements Runnable{
+public class GamePanel extends JPanel implements Runnable, FocusListener{
 
     //WORLD SETTINGS
     final int originalTilesize = 16;
@@ -63,6 +65,18 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.addFocusListener(this);
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        keyH.clearMovementKeys();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        keyH.clearMovementKeys();
+        keyH.enterPressed = false;
     }
 
     public void setupGame() {
