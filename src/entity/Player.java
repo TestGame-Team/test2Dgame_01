@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import main.KeyHandler;
+import content.PlayerAvatar;
 
 public class Player extends Entity{
 
@@ -17,6 +18,9 @@ public class Player extends Entity{
 	public final int screenY;
 //	public int hasKey = 0;
 	int standCounter = 0;
+	private int avatarIndex = 0;
+	private final BufferedImage[][] walkFrames = new BufferedImage[4][4];
+	private final BufferedImage[] idleFrames = new BufferedImage[4];
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
@@ -54,27 +58,64 @@ public class Player extends Entity{
 		maxLife = 6;
 		life = maxLife;
 	}
+	public void setAvatar(int avatarIndex) {
+		if (avatarIndex < 0 || avatarIndex >= PlayerAvatar.values().length) {
+			avatarIndex = 0;
+		}
+		this.avatarIndex = avatarIndex;
+		loadAvatarImages(PlayerAvatar.values()[avatarIndex]);
+	}
+
+	private void loadAvatarImages(PlayerAvatar avatar) {
+		String root = avatar.getResourceRoot();
+		String[] directions = {"down", "left", "right", "up"};
+
+		for (int directionIndex = 0; directionIndex < directions.length; directionIndex++) {
+			String directionName = directions[directionIndex];
+			for (int frame = 0; frame < 4; frame++) {
+				walkFrames[directionIndex][frame] = setup(
+						root + "/walk_" + directionName + "_" + (frame + 1),
+						gp.tileSize, gp.tileSize);
+			}
+			idleFrames[directionIndex] = setup(
+					root + "/idle_" + directionName,
+					gp.tileSize, gp.tileSize);
+		}
+
+		// Keep the inherited image fields synchronized for existing UI code.
+		down1 = walkFrames[0][0];
+		down2 = walkFrames[0][1];
+		left1 = walkFrames[1][0];
+		left2 = walkFrames[1][1];
+		right1 = walkFrames[2][0];
+		right2 = walkFrames[2][1];
+		up1 = walkFrames[3][0];
+		up2 = walkFrames[3][1];
+		getPlayerAttackImage();
+	}
+
+	public int getAvatarIndex() {
+		return avatarIndex;
+	}
+
+	public BufferedImage getPreviewImage() {
+		return idleFrames[0];
+	}
+
 	public void getPlayerImage() {
-		
-		up1 = setup("/player/boy_up_1", gp.tileSize, gp.tileSize);
-		up2 = setup("/player/boy_up_2", gp.tileSize, gp.tileSize);
-		down1 = setup("/player/boy_down_1", gp.tileSize, gp.tileSize);
-		down2 = setup("/player/boy_down_2", gp.tileSize, gp.tileSize);
-		right1 = setup("/player/boy_right_1", gp.tileSize, gp.tileSize);
-		right2 = setup("/player/boy_right_2", gp.tileSize, gp.tileSize);;
-		left1 = setup("/player/boy_left_1", gp.tileSize, gp.tileSize);
-		left2 = setup("/player/boy_left_2", gp.tileSize, gp.tileSize);
+		setAvatar(avatarIndex);
 	}
 	public void getPlayerAttackImage() {
-		
-		attackU1 = setup("/player/boy_attack_up_1", gp.tileSize, gp.tileSize*2);
-		attackU2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize*2);
-		attackD1 = setup("/player/boy_attack_down_1", gp.tileSize, gp.tileSize*2);
-		attackD2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize*2);
-		attackR1 = setup("/player/boy_attack_right_1", gp.tileSize*2, gp.tileSize);
-		attackR2 = setup("/player/boy_attack_right_2", gp.tileSize*2, gp.tileSize);
-		attackL1 = setup("/player/boy_attack_left_1", gp.tileSize*2, gp.tileSize);
-		attackL2 = setup("/player/boy_attack_left_2", gp.tileSize*2, gp.tileSize);
+		// Temporary avatar-safe attack animation: use walking frames until dedicated
+		// attack sheets are available. This keeps every selected avatar consistent.
+		attackU1 = walkFrames[3][1];
+		attackU2 = walkFrames[3][2];
+		attackD1 = walkFrames[0][1];
+		attackD2 = walkFrames[0][2];
+		attackR1 = walkFrames[2][1];
+		attackR2 = walkFrames[2][2];
+		attackL1 = walkFrames[1][1];
+		attackL2 = walkFrames[1][2];
 	}
 	public void update() {
 		
@@ -88,8 +129,7 @@ public class Player extends Entity{
 		if(attacking) {
 			attacking();
 		}
-		else if(keyH.upPressed == true || keyH.downPressed == true ||
-		   keyH.rightPressed == true || keyH.leftPressed == true || keyH.enterPressed == true) {
+		else if(keyH.upPressed || keyH.downPressed || keyH.rightPressed || keyH.leftPressed || keyH.enterPressed) {
 			if(keyH.upPressed == true) {
 				direction = "up";
 			}
@@ -130,22 +170,19 @@ public class Player extends Entity{
 			}
 		}
 		gp.keyH.enterPressed = false;
-		spriteCounter++;
-		if(spriteCounter > 12) {
-			if(spriteNum == 1) {
-				spriteNum = 2;
+		boolean moving = keyH.upPressed || keyH.downPressed || keyH.rightPressed || keyH.leftPressed;
+		if (moving) {
+			standCounter = 0;
+			spriteCounter++;
+			if (spriteCounter > 8) {
+				spriteNum++;
+				if (spriteNum > 4) spriteNum = 1;
+				spriteCounter = 0;
 			}
-			else if(spriteNum == 2) {
-				spriteNum = 1;
-			}
-		spriteCounter = 0;
-			}
-		}else{
+		} else {
 			standCounter++;
-			if(standCounter == 20) {
-				spriteNum = 1;
-				standCounter = 0;
-			}
+			spriteNum = 1;
+			if (standCounter > 20) standCounter = 0;
 		}
 	}
 	public void pickUpObject(int i) {
@@ -239,93 +276,36 @@ public class Player extends Entity{
 		}
 	}
 	public void draw(Graphics2D g2) {
-//		g2.setColor(Color.white); g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-		
 		int tempScreenX = screenX;
 		int tempScreenY = screenY;
-		
 		BufferedImage image = null;
+		boolean moving = keyH.upPressed || keyH.downPressed || keyH.rightPressed || keyH.leftPressed;
+
 		switch(direction) {
-		case "up": 
-			if(!attacking) {
-				if(spriteNum == 1) {
-					image = up1;
-				}
-				else if(spriteNum == 2) {
-					image = up2;
-				}
-			}
-			else if(attacking) {
-				tempScreenY = screenY - gp.tileSize;
-				if(spriteNum == 1) {
-					image = attackU1;
-				}
-				else if(spriteNum == 2) {
-					image = attackU2;
-				}
-			}
+		case "up":
+			if (!attacking) image = moving ? walkFrames[3][spriteNum - 1] : idleFrames[3];
+			else { tempScreenY = screenY - gp.tileSize; image = spriteNum == 1 ? attackU1 : attackU2; }
 			break;
 		case "down":
-			if(!attacking) {
-				if(spriteNum == 1) {
-					image = down1;
-				}
-				else if(spriteNum == 2) {
-					image = down2;
-				}
-			}
-			else if(attacking) {
-				if(spriteNum == 1) {
-					image = attackD1;
-				}
-				else if(spriteNum == 2) {
-					image = attackD2;
-				}
-			}
+			if (!attacking) image = moving ? walkFrames[0][spriteNum - 1] : idleFrames[0];
+			else image = spriteNum == 1 ? attackD1 : attackD2;
 			break;
 		case "right":
-			if(!attacking) {
-				if(spriteNum == 1) {
-					image = right1;
-				}
-				else if(spriteNum == 2) {
-					image = right2;
-				}
-			}
-			else if(attacking) {
-				if(spriteNum == 1) {
-					image = attackR1;
-				}
-				else if(spriteNum == 2) {
-					image = attackR2;
-				}
-			}
+			if (!attacking) image = moving ? walkFrames[2][spriteNum - 1] : idleFrames[2];
+			else image = spriteNum == 1 ? attackR1 : attackR2;
 			break;
 		case "left":
-			if(!attacking) {
-				if(spriteNum == 1) {
-					image = left1;
-				}
-				else if(spriteNum == 2) {
-					image = left2;
-				}
-			}
-			else if(attacking) {
-				tempScreenX = screenX - gp.tileSize;
-				if(spriteNum == 1) {
-					image = attackL1;
-				}
-				else if(spriteNum == 2) {
-					image = attackL2;
-				}
-			}
+			if (!attacking) image = moving ? walkFrames[1][spriteNum - 1] : idleFrames[1];
+			else { tempScreenX = screenX - gp.tileSize; image = spriteNum == 1 ? attackL1 : attackL2; }
 			break;
+		default:
+			image = idleFrames[0];
 		}
-		if(invincible) {
+
+		if (invincible) {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
 		}
 		g2.drawImage(image, tempScreenX, tempScreenY, null);
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-
 	}
 }

@@ -77,17 +77,37 @@ public class KeyHandler implements KeyListener{
 				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 					gp.ui.commandNum--;
 					if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
-				}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				} else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.ui.commandNum++;
 					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
-				}else if(code == KeyEvent.VK_ENTER) {
-					if (gp.ui.commandNum == 0) {System.out.println("Fighter Selected!"); gp.gameState = gp.playState;}
-					if(gp.ui.commandNum == 1) {System.out.println("Ninja Selected!"); gp.gameState = gp.playState;}
-					if(gp.ui.commandNum == 2) {System.out.println("Mage Selected!"); gp.gameState = gp.playState;}
-					if (gp.ui.commandNum == 3) {gp.ui.titleScreenState = 0;	gp.ui.commandNum = 0; gp.stopMusic();}
+				} else if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					if(gp.ui.commandNum == 0) {
+						gp.selectedClass--;
+						if(gp.selectedClass < 0) gp.selectedClass = 2;
+					} else if(gp.ui.commandNum == 1) {
+						gp.player.setAvatar(gp.player.getAvatarIndex() - 1);
+					}
+				} else if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					if(gp.ui.commandNum == 0) {
+						gp.selectedClass++;
+						if(gp.selectedClass > 2) gp.selectedClass = 0;
+					} else if(gp.ui.commandNum == 1) {
+						gp.player.setAvatar(gp.player.getAvatarIndex() + 1);
+					}
+				} else if(code == KeyEvent.VK_ESCAPE) {
+					gp.ui.titleScreenState = 0;
+					gp.ui.commandNum = 0;
+				} else if(code == KeyEvent.VK_ENTER) {
+					if (gp.ui.commandNum == 2) {
+						gp.gameState = gp.playState;
+						gp.ui.titleScreenState = 0;
+						gp.ui.commandNum = 0;
+					} else if (gp.ui.commandNum == 3) {
+						gp.ui.titleScreenState = 0;
+						gp.ui.commandNum = 0;
+					}
 				}
 			}
-		}
 		
 		//PLAY STATE
 		else if(gp.gameState == gp.playState) {

@@ -273,29 +273,62 @@ public class UI {
                     backY, 4, pulse);
 
         } else if (titleScreenState == 1) {
-            // CLASS SELECTION
+            // CHARACTER CREATION
             g2.setFont(font2.deriveFont(Font.BOLD, 46F));
-            String text = "Choose Your Class";
+            String text = "Create Your Character";
             int x = getXforCenteredText(text);
             int y = gp.tileSize * 2;
 
             g2.setColor(new Color(0, 10, 15, 150));
             g2.drawString(text, x + 4, y + 5);
-
             g2.setColor(new Color(220, 245, 250));
             g2.drawString(text, x, y);
 
-            g2.setFont(font5.deriveFont(Font.BOLD, 30F));
-            g2.setColor(new Color(245, 250, 255));
+            // Avatar preview
+            BufferedImage preview = gp.player.getPreviewImage();
+            int previewSize = gp.tileSize * 3;
+            int previewX = gp.screenWidth / 2 - previewSize / 2;
+            int previewY = y + gp.tileSize / 2;
+            g2.setColor(new Color(5, 15, 20, 120));
+            g2.fillRoundRect(previewX - 18, previewY - 12, previewSize + 36, previewSize + 36, 24, 24);
+            g2.setColor(new Color(190, 230, 235, 170));
+            g2.drawRoundRect(previewX - 18, previewY - 12, previewSize + 36, previewSize + 36, 24, 24);
+            g2.drawImage(preview, previewX, previewY, previewSize, previewSize, null);
 
-            int classStep = gp.tileSize;
-            int classX = getXforCenteredText("Fighter");
-            int classY = y + gp.tileSize * 2;
+            String[] classes = {"Fighter", "Ninja", "Mage"};
+            String classText = "Class: " + classes[gp.selectedClass];
+            String avatarText = "Avatar: " + content.PlayerAvatar.values()[gp.player.getAvatarIndex()].getDisplayName();
 
-            drawTitleMenuItem("Fighter", classX, classY, 0, pulse);
-            drawTitleMenuItem("Ninja", classX, classY + classStep, 1, pulse);
-            drawTitleMenuItem("Mage", classX, classY + classStep * 2, 2, pulse);
-            drawTitleMenuItem("Back", classX, classY + classStep * 4, 3, pulse);
+            g2.setFont(font5.deriveFont(Font.BOLD, 28F));
+            int classY = previewY + previewSize + gp.tileSize;
+            drawCreationOption(classText, classY, 0, pulse);
+            drawCreationOption(avatarText, classY + gp.tileSize, 1, pulse);
+            drawCreationOption("CONFIRM", classY + gp.tileSize * 2, 2, pulse);
+            drawCreationOption("BACK", classY + gp.tileSize * 3, 3, pulse);
+
+            g2.setFont(font5.deriveFont(Font.PLAIN, 16F));
+            g2.setColor(new Color(205, 225, 230));
+            String hint = "W/S: select   A/D: change   ENTER: confirm";
+            g2.drawString(hint, getXforCenteredText(hint), gp.screenHeight - gp.tileSize / 2);
+        }
+    }
+
+    private void drawCreationOption(String text, int y, int index, float pulse) {
+        int x = getXforCenteredText(text);
+
+        if (commandNum == index) {
+            int alpha = 120 + (int) (pulse * 100);
+            g2.setColor(new Color(120, 215, 235, alpha));
+            g2.drawString(">", x - gp.tileSize, y);
+            g2.setColor(Color.white);
+            g2.drawString(text, x, y);
+
+            int textWidth = g2.getFontMetrics().stringWidth(text);
+            g2.setColor(new Color(170, 235, 245, 150 + (int) (pulse * 70)));
+            g2.drawLine(x, y + 5, x + textWidth, y + 5);
+        } else {
+            g2.setColor(new Color(225, 235, 240));
+            g2.drawString(text, x, y);
         }
     }
 
