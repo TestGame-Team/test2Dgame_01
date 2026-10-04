@@ -141,62 +141,95 @@ public class UI {
         drawTitleBackground(time);
 
         if (titleScreenState == 0) {
-            //TITLE
-            g2.setFont(font6.deriveFont(Font.BOLD, 75F));
+            // TITLE
+            g2.setFont(font2.deriveFont(Font.BOLD, Font.ITALIC, 68F));
             String text = "Blue Boy Adventure";
             int x = getXforCenteredText(text);
             int y = gp.tileSize * 3;
 
-            g2.setColor(new Color(30, 45, 55, 120 + (int) (pulse * 50)));
-            g2.drawString(text, x + 4, y + 5);
+            g2.setColor(new Color(0, 10, 15, 150));
+            g2.drawString(text, x + 5, y + 6);
 
-            g2.setColor(new Color(220, 245, 255));
+            g2.setColor(new Color(175, 225, 235, 80 + (int) (pulse * 45)));
+            g2.drawString(text, x - 1, y - 1);
+
+            g2.setColor(new Color(235, 250, 255));
             g2.drawString(text, x, y);
 
-            //CHARACTER
+            // CHARACTER
             x = gp.screenWidth / 2 - (gp.tileSize * 2) / 2;
             y += gp.tileSize + bob;
             g2.drawImage(gp.player.down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
 
-            //MENU
-            g2.setFont(font5.deriveFont(Font.BOLD, 45F));
+            // MAIN MENU
+            final int menuFontSize = 31;
+            final int menuTop = gp.tileSize * 7;
+            final int menuStep = gp.tileSize - 2;
+
+            g2.setFont(font5.deriveFont(Font.BOLD, menuFontSize));
             g2.setColor(new Color(245, 250, 255));
 
-            text = "NEW GAME";
-            x = getXforCenteredText(text);
-            y = gp.tileSize * 7;
+            int menuHeight = menuStep * 4 + 10;
+            int menuX = gp.tileSize * 2;
+            int menuY = menuTop - 24;
+            int menuWidth = gp.screenWidth - (gp.tileSize * 4);
 
-            g2.drawRoundRect(gp.tileSize, gp.tileSize * 7 - 18,
-                    gp.tileSize * 14, gp.tileSize * 4 + 12, 18, 18);
+            g2.setColor(new Color(5, 15, 20, 120));
+            g2.fillRoundRect(menuX, menuY, menuWidth, menuHeight, 20, 20);
 
-            drawTitleMenuItem(text, x, y, 0, pulse);
-            drawTitleMenuItem("LOAD GAME", x, y + gp.tileSize, 1, pulse);
-            drawTitleMenuItem("OPTIONS", x, y + gp.tileSize * 2, 2, pulse);
-            drawTitleMenuItem("QUIT", x, y + gp.tileSize * 3, 3, pulse);
+            g2.setColor(new Color(190, 230, 235, 170));
+            g2.drawRoundRect(menuX, menuY, menuWidth, menuHeight, 20, 20);
+
+            g2.setColor(new Color(245, 250, 255));
+
+            drawTitleMenuItem("NEW GAME", getXforCenteredText("NEW GAME"), menuTop, 0, pulse);
+            drawTitleMenuItem("LOAD GAME", getXforCenteredText("LOAD GAME"), menuTop + menuStep, 1, pulse);
+            drawTitleMenuItem("OPTIONS", getXforCenteredText("OPTIONS"), menuTop + menuStep * 2, 2, pulse);
+            drawTitleMenuItem("EXIT", getXforCenteredText("EXIT"), menuTop + menuStep * 3, 3, pulse);
+
         } else if (titleScreenState == 1) {
-            //CLASS SELECTION
-            g2.setColor(Color.white);
-            g2.setFont(font6.deriveFont(42F));
-            String text = "Select your class!";
+            // CLASS SELECTION
+            g2.setFont(font2.deriveFont(Font.BOLD, Font.ITALIC, 46F));
+            String text = "Choose Your Class";
             int x = getXforCenteredText(text);
             int y = gp.tileSize * 2;
 
+            g2.setColor(new Color(0, 10, 15, 150));
+            g2.drawString(text, x + 4, y + 5);
+
+            g2.setColor(new Color(220, 245, 250));
             g2.drawString(text, x, y);
-            drawTitleMenuItem("Fighter", x, y + gp.tileSize * 2, 0, pulse);
-            drawTitleMenuItem("Ninja", x, y + gp.tileSize * 3, 1, pulse);
-            drawTitleMenuItem("Mage", x, y + gp.tileSize * 4, 2, pulse);
-            drawTitleMenuItem("Back", x, y + gp.tileSize * 6, 3, pulse);
+
+            g2.setFont(font5.deriveFont(Font.BOLD, 30F));
+            g2.setColor(new Color(245, 250, 255));
+
+            int classStep = gp.tileSize;
+            int classX = getXforCenteredText("Fighter");
+            int classY = y + gp.tileSize * 2;
+
+            drawTitleMenuItem("Fighter", classX, classY, 0, pulse);
+            drawTitleMenuItem("Ninja", classX, classY + classStep, 1, pulse);
+            drawTitleMenuItem("Mage", classX, classY + classStep * 2, 2, pulse);
+            drawTitleMenuItem("Back", classX, classY + classStep * 4, 3, pulse);
         }
     }
 
     private void drawTitleMenuItem(String text, int x, int y, int index, float pulse) {
-        g2.drawString(text, x, y);
-
         if (commandNum == index) {
             int alpha = 120 + (int) (pulse * 100);
-            g2.setColor(new Color(150, 235, 255, alpha));
+
+            g2.setColor(new Color(120, 215, 235, alpha));
             g2.drawString(">", x - gp.tileSize, y);
-            g2.setColor(new Color(245, 250, 255));
+
+            g2.setColor(new Color(255, 255, 255));
+            g2.drawString(text, x, y);
+
+            int textWidth = g2.getFontMetrics().stringWidth(text);
+            g2.setColor(new Color(170, 235, 245, 150 + (int) (pulse * 70)));
+            g2.drawLine(x, y + 5, x + textWidth, y + 5);
+        } else {
+            g2.setColor(new Color(225, 235, 240));
+            g2.drawString(text, x, y);
         }
     }
 
