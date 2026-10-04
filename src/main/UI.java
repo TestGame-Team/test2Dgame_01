@@ -22,6 +22,7 @@ public class UI {
     public String currentDialogue;
     public int titleScreenState = 0;
     public int commandNum = 0;
+    public int pauseScreenState = 0;
     int msgCounter = 0;
 
     private final long titleAnimationStart = System.nanoTime();
@@ -48,6 +49,7 @@ public class UI {
 
     public void draw(Graphics2D g2) {
         this.g2 = g2;
+        msgCounter = 0;
         g2.setFont(font5);
         g2.setColor(Color.white);
 
@@ -80,11 +82,63 @@ public class UI {
     }
 
     public void drawPauseScreen() {
-        String text = "PAUSED";
-        g2.setFont(g2.getFont().deriveFont(90F));
+        g2.setColor(new Color(0, 0, 0, 155));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        g2.setFont(font2.deriveFont(Font.BOLD, 58F));
+        String title = pauseScreenState == 0 ? "PAUSED"
+                : pauseScreenState == 1 ? "OPTIONS" : "HELP";
+        int titleX = getXforCenteredText(title);
+        g2.setColor(new Color(220, 245, 250));
+        g2.drawString(title, titleX, gp.tileSize * 2);
+
+        g2.setFont(font5.deriveFont(Font.BOLD, 28F));
+
+        if (pauseScreenState == 0) {
+            drawPauseMenuItem("OPTIONS", 0);
+            drawPauseMenuItem("SAVE GAME", 1);
+            drawPauseMenuItem("HELP", 2);
+            drawPauseMenuItem("EXIT TO MAIN MENU", 3);
+        } else if (pauseScreenState == 1) {
+            drawCenteredPauseText("OPTIONS");
+            drawCenteredPauseText("Press ESC to return.");
+        } else {
+            drawCenteredPauseText("W A S D  - Move");
+            drawCenteredPauseText("ENTER   - Interact");
+            drawCenteredPauseText("P       - Resume");
+            drawCenteredPauseText("ESC     - Back");
+            drawCenteredPauseText("T       - Debug");
+        }
+
+        if (messageOn) {
+            g2.setFont(font5.deriveFont(Font.BOLD, 22F));
+            int messageX = getXforCenteredText(message);
+            int messageY = gp.screenHeight - gp.tileSize;
+            g2.setColor(new Color(180, 235, 245));
+            g2.drawString(message, messageX, messageY);
+        }
+    }
+
+    private void drawPauseMenuItem(String text, int index) {
+        int y = gp.tileSize * 4 + index * gp.tileSize;
         int x = getXforCenteredText(text);
-        int y = gp.screenHeight / 2;
+
+        if (commandNum == index) {
+            g2.setColor(new Color(120, 215, 235));
+            g2.drawString(">", x - gp.tileSize, y);
+            g2.setColor(Color.white);
+        } else {
+            g2.setColor(new Color(225, 235, 240));
+        }
+
         g2.drawString(text, x, y);
+    }
+
+    private void drawCenteredPauseText(String text) {
+        int y = gp.tileSize * 4 + msgCounter;
+        g2.setColor(new Color(235, 245, 250));
+        g2.drawString(text, getXforCenteredText(text), y);
+        msgCounter += gp.tileSize;
     }
 
     public int getXforCenteredText(String text) {
