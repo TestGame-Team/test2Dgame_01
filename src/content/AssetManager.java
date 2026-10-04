@@ -2,6 +2,7 @@ package content;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,14 +33,17 @@ public final class AssetManager {
         }
 
         BufferedImage image;
-        try {
-            image = ImageIO.read(AssetManager.class.getResourceAsStream(path + ".png"));
+        try (InputStream input = AssetManager.class.getResourceAsStream(path + ".png")) {
+            if (input == null) {
+                throw new IllegalArgumentException("Image resource not found: " + path + ".png");
+            }
+            image = ImageIO.read(input);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load image: " + path, e);
         }
 
         if (image == null) {
-            throw new IllegalArgumentException("Image resource not found: " + path + ".png");
+            throw new IllegalArgumentException("Could not decode image: " + path + ".png");
         }
 
         BufferedImage scaled = UTILITY_TOOL.scaleImage(image, width, height);
