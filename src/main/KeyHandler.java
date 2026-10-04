@@ -125,7 +125,7 @@ public class KeyHandler implements KeyListener{
 				}
 			} else if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				gp.ui.commandNum--;
-				if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
+				if(gp.ui.commandNum < 0) gp.ui.commandNum = 4;
 			} else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				gp.ui.commandNum++;
 				if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
