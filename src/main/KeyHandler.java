@@ -27,7 +27,7 @@ public class KeyHandler implements KeyListener{
 					if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
 				}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.ui.commandNum++;
-					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
+					if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
 				}else if(code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) {
 						gp.ui.titleScreenState = 1;
@@ -48,10 +48,10 @@ public class KeyHandler implements KeyListener{
 			else if(gp.ui.titleScreenState == 2) {
 				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 					gp.ui.commandNum--;
-					if(gp.ui.commandNum < 0) gp.ui.commandNum = 3;
+					if(gp.ui.commandNum < 0) gp.ui.commandNum = 4;
 				}else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 					gp.ui.commandNum++;
-					if(gp.ui.commandNum > 3) gp.ui.commandNum = 0;
+					if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
 				}else if(code == KeyEvent.VK_ENTER) {
 					if(gp.ui.commandNum <= 2) {
 						if(gp.saveManager.loadGame(gp.ui.commandNum + 1)) {
@@ -62,6 +62,10 @@ public class KeyHandler implements KeyListener{
 						}else {
 							gp.ui.showMessage("That save slot is empty or invalid.");
 						}
+					}else if(gp.ui.commandNum == 3) {
+						int clearedSlot = gp.saveManager.clearNextSlot();
+						if(clearedSlot > 0) gp.ui.showMessage("Cleared Slot " + clearedSlot);
+						else gp.ui.showMessage("All save slots are already empty.");
 					}else {
 						gp.ui.titleScreenState = 0;
 						gp.ui.commandNum = 0;
@@ -128,15 +132,17 @@ public class KeyHandler implements KeyListener{
 			} else if(code == KeyEvent.VK_ENTER) {
 				if(gp.ui.pauseScreenState == 0) {
 					if(gp.ui.commandNum == 0) {
+						gp.gameState = gp.playState;
+					} else if(gp.ui.commandNum == 1) {
 						gp.ui.pauseScreenState = 1;
 						gp.ui.commandNum = 0;
-					} else if(gp.ui.commandNum == 1) {
+					} else if(gp.ui.commandNum == 2) {
 						int slot = gp.saveManager.saveGame();
 						gp.ui.showMessage("Game saved to Slot " + slot);
-					} else if(gp.ui.commandNum == 2) {
+					} else if(gp.ui.commandNum == 3) {
 						gp.ui.pauseScreenState = 2;
 						gp.ui.commandNum = 0;
-					} else if(gp.ui.commandNum == 3) {
+					} else if(gp.ui.commandNum == 4) {
 						gp.stopMusic();
 						gp.ui.titleScreenState = 0;
 						gp.ui.pauseScreenState = 0;
