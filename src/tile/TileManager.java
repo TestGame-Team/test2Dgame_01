@@ -5,9 +5,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.imageio.ImageIO;
+
+import content.AssetManager;
 import main.GamePanel;
-import main.UtilityTool;
 
 public class TileManager {
 
@@ -84,21 +84,12 @@ public class TileManager {
 			//PLACEHOLDER
 	}
 	public void setup(int index, String imageName, boolean collision) {
-		
-		UtilityTool uTool = new UtilityTool();
-		try {
-			
-			tile[index] = new Tile();
-			tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/"+imageName+".png"));
-			tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
-			tile[index].collision = collision;
-			
-		}catch(IOException e) {
-			e.printStackTrace();
-//			System.out.println("In TileManager!");
-		}
-	}
-	public void loadMap(String filePath) {
+        tile[index] = new Tile();
+        tile[index].image = AssetManager.getImage("/tiles/" + imageName, gp.tileSize, gp.tileSize);
+        tile[index].collision = collision;
+    }
+
+    public void loadMap(String filePath) {
 		
 		try {
 			

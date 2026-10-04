@@ -4,10 +4,9 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+
+import content.AssetManager;
 import main.GamePanel;
-import main.UtilityTool;
 
 public class Entity {
 
@@ -194,14 +193,6 @@ public class Entity {
 	}
 	
 	public BufferedImage setup(String imagePath, int width, int height) {
-		UtilityTool uTool = new UtilityTool();
-		BufferedImage image = null;
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream(imagePath+".png"));
-			image = uTool.scaleImage(image, width, height);
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-		return image;
-	}
+        return AssetManager.getImage(imagePath, width, height);
+    }
 }
