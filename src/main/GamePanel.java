@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenHeight = maxScreenRow * tileSize;
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    int FPS = 60;  // Game-Setting
+    int FPS = 60;
 
     //SYSTEM
     public CollisionChecker cChecker = new CollisionChecker(this);
@@ -39,11 +39,11 @@ public class GamePanel extends JPanel implements Runnable{
     Thread gameThread;
 
     //ENTITY & OBJECT
-    public Player player = new Player(this, keyH);    // Player
-    public Entity obj[] = new Entity[10];              // How Many Objects At A Time
-    public Entity npc[] = new Entity[10];              // How Many Characters At A Time
-    public Entity monster[] = new Entity[10];          // How Many Enemies At A Time
-    ArrayList<Entity> entityList = new ArrayList<>(); // Entity Order Management
+    public Player player = new Player(this, keyH);
+    public Entity obj[] = new Entity[10];
+    public Entity npc[] = new Entity[10];
+    public Entity monster[] = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     //GAME STATE
     public int gameState;
@@ -51,6 +51,9 @@ public class GamePanel extends JPanel implements Runnable{
     public final int playState = 1;
     public final int pauseState = 2;
     public final int dialogueState = 3;
+
+    //DEBUG
+    private double renderTimeMs;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -122,8 +125,6 @@ public class GamePanel extends JPanel implements Runnable{
                     }
                 }
             }
-        } else if (gameState == pauseState) {
-            // PLACEHOLDER
         }
     }
 
@@ -131,13 +132,9 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        //DEBUG
-        long drawStart = 0;
-        if (keyH.debugPressed) {
-            drawStart = System.nanoTime();
-        }
+        final boolean debug = keyH.debugPressed;
+        final long drawStart = debug ? System.nanoTime() : 0L;
 
-        //GAME STATE
         if (gameState == titleState) {
             ui.draw(g2);
         } else {
@@ -178,20 +175,18 @@ public class GamePanel extends JPanel implements Runnable{
                 entityList.get(i).draw(g2);
             }
 
-            //EMPTY
             entityList.clear();
 
             //UI
             ui.draw(g2);
-            g2.dispose();
         }
 
-        //DEBUG
-        if (keyH.debugPressed) {
-            long drawComp = System.nanoTime();
-            long drawTime = drawComp - drawStart;
-            System.out.println("Draw Time : " + drawTime + "nanoseconds\n");
+        if (debug) {
+            renderTimeMs = (System.nanoTime() - drawStart) / 1_000_000.0;
+            ui.drawDebugStats(g2, renderTimeMs);
         }
+
+        g2.dispose();
     }
 
     public void playMusic(int i) {
