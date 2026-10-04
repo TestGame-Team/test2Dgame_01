@@ -142,7 +142,7 @@ public class UI {
 
         if (titleScreenState == 0) {
             // TITLE
-            g2.setFont(font2.deriveFont(Font.BOLD, Font.ITALIC, 68F));
+            g2.setFont(font2.deriveFont(Font.BOLD, 68F));
             String text = "Blue Boy Adventure";
             int x = getXforCenteredText(text);
             int y = gp.tileSize * 3;
@@ -163,15 +163,15 @@ public class UI {
 
             // MAIN MENU
             final int menuFontSize = 31;
-            final int menuTop = gp.tileSize * 7;
+            final int menuTop = (gp.tileSize * 7);
             final int menuStep = gp.tileSize - 2;
 
             g2.setFont(font5.deriveFont(Font.BOLD, menuFontSize));
             g2.setColor(new Color(245, 250, 255));
 
-            int menuHeight = menuStep * 4 + 10;
+            int menuHeight = menuStep * 4 + 40;
             int menuX = gp.tileSize * 2;
-            int menuY = menuTop - 24;
+            int menuY = menuTop - 5;
             int menuWidth = gp.screenWidth - (gp.tileSize * 4);
 
             g2.setColor(new Color(5, 15, 20, 120));
@@ -182,14 +182,14 @@ public class UI {
 
             g2.setColor(new Color(245, 250, 255));
 
-            drawTitleMenuItem("NEW GAME", getXforCenteredText("NEW GAME"), menuTop, 0, pulse);
-            drawTitleMenuItem("LOAD GAME", getXforCenteredText("LOAD GAME"), menuTop + menuStep, 1, pulse);
-            drawTitleMenuItem("OPTIONS", getXforCenteredText("OPTIONS"), menuTop + menuStep * 2, 2, pulse);
-            drawTitleMenuItem("EXIT", getXforCenteredText("EXIT"), menuTop + menuStep * 3, 3, pulse);
+            drawTitleMenuItem("NEW GAME", getXforCenteredText("NEW GAME"), menuTop + menuStep * 1, 0, pulse);
+            drawTitleMenuItem("LOAD GAME", getXforCenteredText("LOAD GAME"), menuTop + menuStep * 2, 1, pulse);
+            drawTitleMenuItem("OPTIONS", getXforCenteredText("OPTIONS"), menuTop + menuStep * 3, 2, pulse);
+            drawTitleMenuItem("EXIT", getXforCenteredText("EXIT"), menuTop + menuStep * 4, 3, pulse);
 
         } else if (titleScreenState == 1) {
             // CLASS SELECTION
-            g2.setFont(font2.deriveFont(Font.BOLD, Font.ITALIC, 46F));
+            g2.setFont(font2.deriveFont(Font.BOLD, 46F));
             String text = "Choose Your Class";
             int x = getXforCenteredText(text);
             int y = gp.tileSize * 2;
