@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final WorldManager worldManager =
             new WorldManager(maxWorldCol, maxWorldRow, "/maps/big-map_02.txt");
     TileManager tileM = new TileManager(this, worldManager.getMap());
+    public final SaveManager saveManager = new SaveManager(this);
     public KeyHandler keyH = new KeyHandler(this);
     public EventHandler eHandler = new EventHandler(this);
     Sound music = new Sound();
