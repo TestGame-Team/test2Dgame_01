@@ -4,10 +4,12 @@ import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class Sound {
 
 	Clip clip;
+	private float volume = 0.70f;
 	URL soundURL[] = new URL[30];
 	
 	public Sound() {
@@ -20,10 +22,12 @@ public class Sound {
 	public void setFile(int i) {
 		
 		try {
-			
+			if (soundURL[i] == null) return;
+			if (clip != null) { clip.stop(); clip.close(); }
 			AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
 			clip = AudioSystem.getClip();
 			clip.open(ais);
+			applyVolume();
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -40,8 +44,18 @@ public class Sound {
 		}
 	}
 	public void stop() {
-		if (clip != null) {
-			clip.stop();
-		}
+		if (clip != null) clip.stop();
+	}
+
+	public void setVolume(float volume) {
+		this.volume = Math.max(0.0f, Math.min(1.0f, volume));
+		applyVolume();
+	}
+
+	private void applyVolume() {
+		if (clip == null || !clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) return;
+		FloatControl gain = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		float decibels = volume <= 0.001f ? gain.getMinimum() : (float) (20.0 * Math.log10(volume));
+		gain.setValue(Math.max(gain.getMinimum(), Math.min(gain.getMaximum(), decibels)));
 	}
 }
