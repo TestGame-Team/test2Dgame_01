@@ -66,19 +66,13 @@ public class UI {
         }
     }
 
-    public void drawDebugStats(Graphics2D g2, double renderTimeMs) {
+    public void drawDebugStats(Graphics2D g2, double renderTimeMs, int fps) {
         g2.setFont(font1);
         g2.setColor(Color.white);
 
-        String text = String.format("Render: %.3f ms", renderTimeMs);
-        int x = 8;
-        int y = gp.screenHeight - 8;
-
-        g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRoundRect(x - 4, y - 18, 118, 22, 8, 8);
-
+        String text = String.format("FPS: %d   Render: %.3f ms", fps, renderTimeMs);
         g2.setColor(Color.white);
-        g2.drawString(text, x, y - 2);
+        g2.drawString(text, 8, gp.screenHeight - 8);
     }
 
     public void drawPauseScreen() {
@@ -101,8 +95,10 @@ public class UI {
             drawPauseMenuItem("HELP", 3);
             drawPauseMenuItem("EXIT TO MAIN MENU", 4);
         } else if (pauseScreenState == 1) {
-            drawCenteredPauseText("OPTIONS");
-            drawCenteredPauseText("Press ESC to return.");
+            drawCenteredPauseText("MUSIC VOLUME: " + gp.getMusicVolume() + "%");
+            drawCenteredPauseText("SFX VOLUME: " + gp.getSfxVolume() + "%");
+            drawCenteredPauseText("LEFT/RIGHT adjusts volume");
+            drawCenteredPauseText("ESC to return");
         } else {
             drawCenteredPauseText("W A S D  - Move");
             drawCenteredPauseText("ENTER   - Interact");
@@ -272,6 +268,24 @@ public class UI {
             drawTitleMenuItem(backText, getXforCenteredText(backText),
                     backY, 4, pulse);
 
+        } else if (titleScreenState == 3) {
+            g2.setFont(font2.deriveFont(Font.BOLD, 46F));
+            String text = "Options";
+            int x = getXforCenteredText(text);
+            int y = gp.tileSize * 2;
+            g2.setColor(new Color(0, 10, 15, 150));
+            g2.drawString(text, x + 4, y + 5);
+            g2.setColor(new Color(220, 245, 250));
+            g2.drawString(text, x, y);
+            g2.setFont(font5.deriveFont(Font.BOLD, 27F));
+            String musicText = "Music Volume: " + gp.getMusicVolume() + "%";
+            String sfxText = "SFX Volume: " + gp.getSfxVolume() + "%";
+            drawTitleMenuItem(musicText, getXforCenteredText(musicText), y + gp.tileSize * 2, 0, pulse);
+            drawTitleMenuItem(sfxText, getXforCenteredText(sfxText), y + gp.tileSize * 3, 1, pulse);
+            drawTitleMenuItem("Back", getXforCenteredText("Back"), y + gp.tileSize * 5, 2, pulse);
+            g2.setFont(font5.deriveFont(Font.PLAIN, 18F));
+            String hint = "Use LEFT/RIGHT to adjust volume";
+            g2.drawString(hint, getXforCenteredText(hint), y + gp.tileSize * 6);
         } else if (titleScreenState == 1) {
             // CLASS SELECTION
             g2.setFont(font2.deriveFont(Font.BOLD, 46F));
