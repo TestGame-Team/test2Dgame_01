@@ -24,6 +24,9 @@ public class GamePanel extends JPanel implements Runnable{
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
     int FPS = 60;
+    private int currentFps;
+    private int musicVolume = 70;
+    private int sfxVolume = 70;
 
     //SYSTEM
     public CollisionChecker cChecker = new CollisionChecker(this);
@@ -100,6 +103,7 @@ public class GamePanel extends JPanel implements Runnable{
             }
 
             if (timer >= 1000000000) {
+                currentFps = drawCount;
                 System.out.println("FPS : " + drawCount);
                 drawCount = 0;
                 timer = 0;
@@ -184,13 +188,27 @@ public class GamePanel extends JPanel implements Runnable{
 
         if (debug) {
             renderTimeMs = (System.nanoTime() - drawStart) / 1_000_000.0;
-            ui.drawDebugStats(g2, renderTimeMs);
+            ui.drawDebugStats(g2, renderTimeMs, currentFps);
         }
 
         g2.dispose();
     }
 
+    public int getMusicVolume() { return musicVolume; }
+    public int getSfxVolume() { return sfxVolume; }
+
+    public void setMusicVolume(int volume) {
+        musicVolume = Math.max(0, Math.min(100, volume));
+        music.setVolume(musicVolume / 100.0f);
+    }
+
+    public void setSfxVolume(int volume) {
+        sfxVolume = Math.max(0, Math.min(100, volume));
+        se.setVolume(sfxVolume / 100.0f);
+    }
+
     public void playMusic(int i) {
+        music.setVolume(musicVolume / 100.0f);
         music.setFile(i);
         music.play();
         music.loop();
@@ -201,6 +219,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void playSE(int i) {
+        se.setVolume(sfxVolume / 100.0f);
         se.setFile(i);
         se.play();
     }
