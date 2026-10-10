@@ -36,7 +36,8 @@ public class KeyHandler implements KeyListener{
 						gp.ui.titleScreenState = 2;
 						gp.ui.commandNum = 0;
 					}else if(gp.ui.commandNum == 2) {
-						// Options screen will be connected here later.
+						gp.ui.titleScreenState = 3;
+						gp.ui.commandNum = 0;
 					}else if(gp.ui.commandNum == 3) {
 						System.exit(0);
 					}
@@ -44,6 +45,19 @@ public class KeyHandler implements KeyListener{
 				 * else if(code == KeyEvent.VK_RIGHT || code == KeyEvent.VK_LEFT) { //DEBUG
 				 * System.out.println("NO issues here!"); }
 				 */
+			}
+			else if(gp.ui.titleScreenState == 3) {
+				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) gp.ui.commandNum = (gp.ui.commandNum + 2) % 3;
+				else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) gp.ui.commandNum = (gp.ui.commandNum + 1) % 3;
+				else if(code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) {
+					int change = code == KeyEvent.VK_RIGHT ? 10 : -10;
+					if(gp.ui.commandNum == 0) gp.setMusicVolume(gp.getMusicVolume() + change);
+					else if(gp.ui.commandNum == 1) gp.setSfxVolume(gp.getSfxVolume() + change);
+				} else if(code == KeyEvent.VK_ENTER && gp.ui.commandNum == 2) {
+					gp.ui.titleScreenState = 0; gp.ui.commandNum = 2;
+				} else if(code == KeyEvent.VK_ESCAPE) {
+					gp.ui.titleScreenState = 0; gp.ui.commandNum = 2;
+				}
 			}
 			else if(gp.ui.titleScreenState == 2) {
 				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -123,12 +137,16 @@ public class KeyHandler implements KeyListener{
 				} else {
 					gp.gameState = gp.playState;
 				}
+			} else if(gp.ui.pauseScreenState == 1 && (code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT)) {
+				int change = code == KeyEvent.VK_RIGHT ? 10 : -10;
+				if(gp.ui.commandNum == 0) gp.setMusicVolume(gp.getMusicVolume() + change);
+				else if(gp.ui.commandNum == 1) gp.setSfxVolume(gp.getSfxVolume() + change);
 			} else if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				gp.ui.commandNum--;
-				if(gp.ui.commandNum < 0) gp.ui.commandNum = 4;
+				if(gp.ui.commandNum < 0) gp.ui.commandNum = gp.ui.pauseScreenState == 1 ? 1 : 4;
 			} else if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				gp.ui.commandNum++;
-				if(gp.ui.commandNum > 4) gp.ui.commandNum = 0;
+				if(gp.ui.commandNum > (gp.ui.pauseScreenState == 1 ? 1 : 4)) gp.ui.commandNum = 0;
 			} else if(code == KeyEvent.VK_ENTER) {
 				if(gp.ui.pauseScreenState == 0) {
 					if(gp.ui.commandNum == 0) {
@@ -149,8 +167,10 @@ public class KeyHandler implements KeyListener{
 						gp.ui.commandNum = 0;
 						gp.gameState = gp.titleState;
 					}
-				} else if(gp.ui.pauseScreenState == 1 || gp.ui.pauseScreenState == 2) {
-					// Options and Help are informational for now.
+				} else if(gp.ui.pauseScreenState == 1) {
+					// Adjust volume with LEFT/RIGHT; ESC returns to pause menu.
+				} else if(gp.ui.pauseScreenState == 2) {
+					// Help screen is informational.
 				}
 			}
 		}
