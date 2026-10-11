@@ -23,6 +23,7 @@ public class UI {
     public int titleScreenState = 0;
     public int commandNum = 0;
     public int pauseScreenState = 0;
+    public int inventoryIndex = 0;
     int msgCounter = 0;
 
     private final long titleAnimationStart = System.nanoTime();
@@ -63,6 +64,60 @@ public class UI {
             drawDialogueScreen();
         } else if (gp.gameState == gp.titleState) {
             drawTitleScreen();
+        } else if (gp.gameState == gp.inventoryState) {
+            drawInventoryScreen();
+        }
+    }
+
+
+    public void drawInventoryScreen() {
+        g2.setColor(new Color(0, 0, 0, 190));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        g2.setFont(font2.deriveFont(Font.BOLD, 48F));
+        String title = "INVENTORY";
+        g2.setColor(new Color(220, 245, 250));
+        g2.drawString(title, getXforCenteredText(title), gp.tileSize * 2);
+
+        g2.setFont(font5.deriveFont(Font.BOLD, 23F));
+        java.util.List<inventory.Inventory.Stack> stacks = gp.player.inventory.getStacks();
+        if (stacks.isEmpty()) {
+            String empty = "Your inventory is empty.";
+            g2.drawString(empty, getXforCenteredText(empty), gp.tileSize * 4);
+        } else {
+            int startY = gp.tileSize * 3;
+            int lineHeight = 34;
+            for (int i = 0; i < stacks.size(); i++) {
+                inventory.Inventory.Stack stack = stacks.get(i);
+                String row = stack.item.name + "  x" + stack.getQuantity()
+                        + (stack.isEquipped() ? "  [EQUIPPED]" : "");
+                int y = startY + i * lineHeight;
+                if (i == inventoryIndex) {
+                    g2.setColor(new Color(120, 215, 235));
+                    g2.drawString(">", gp.tileSize * 2, y);
+                }
+                g2.setColor(i == inventoryIndex ? Color.WHITE : new Color(220, 230, 235));
+                g2.drawString(row, gp.tileSize * 2 + gp.tileSize / 2, y);
+            }
+
+            inventory.Inventory.Stack selected = stacks.get(
+                    Math.max(0, Math.min(inventoryIndex, stacks.size() - 1)));
+            String action = selected.item.equippable
+                    ? "ENTER: Equip / Unequip    D: Drop stack"
+                    : "ENTER: Cannot equip this item    D: Drop stack";
+            g2.setFont(font5.deriveFont(Font.PLAIN, 18F));
+            g2.setColor(new Color(190, 225, 230));
+            g2.drawString(action, gp.tileSize * 2, gp.screenHeight - gp.tileSize * 2);
+        }
+
+        g2.setFont(font5.deriveFont(Font.PLAIN, 18F));
+        g2.setColor(new Color(190, 225, 230));
+        String help = "W/S or UP/DOWN: Select    I/ESC: Close";
+        g2.drawString(help, getXforCenteredText(help), gp.screenHeight - gp.tileSize);
+        if (messageOn && message != null) {
+            g2.setFont(font5.deriveFont(Font.BOLD, 20F));
+            g2.setColor(new Color(255, 220, 150));
+            g2.drawString(message, getXforCenteredText(message), gp.screenHeight - gp.tileSize * 3 / 2);
         }
     }
 
