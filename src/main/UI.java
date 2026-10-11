@@ -71,54 +71,156 @@ public class UI {
 
 
     public void drawInventoryScreen() {
-        g2.setColor(new Color(0, 0, 0, 190));
+        g2.setColor(new Color(5, 10, 16, 205));
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
-        g2.setFont(font2.deriveFont(Font.BOLD, 48F));
+        g2.setFont(font2.deriveFont(Font.BOLD, 38F));
         String title = "INVENTORY";
-        g2.setColor(new Color(220, 245, 250));
-        g2.drawString(title, getXforCenteredText(title), gp.tileSize * 2);
+        g2.setColor(new Color(225, 244, 248));
+        g2.drawString(title, getXforCenteredText(title), gp.tileSize + 8);
 
-        g2.setFont(font5.deriveFont(Font.BOLD, 23F));
         java.util.List<inventory.Inventory.Stack> stacks = gp.player.inventory.getStacks();
-        if (stacks.isEmpty()) {
-            String empty = "Your inventory is empty.";
-            g2.drawString(empty, getXforCenteredText(empty), gp.tileSize * 4);
-        } else {
-            int startY = gp.tileSize * 3;
-            int lineHeight = 34;
-            for (int i = 0; i < stacks.size(); i++) {
-                inventory.Inventory.Stack stack = stacks.get(i);
-                String row = stack.item.name + "  x" + stack.getQuantity()
-                        + (stack.isEquipped() ? "  [EQUIPPED]" : "");
-                int y = startY + i * lineHeight;
-                if (i == inventoryIndex) {
-                    g2.setColor(new Color(120, 215, 235));
-                    g2.drawString(">", gp.tileSize * 2, y);
+        final int columns = 5;
+        final int rows = 4;
+        final int cellSize = Math.max(42, Math.min(gp.tileSize + 4, (gp.screenWidth - gp.tileSize * 4) / columns));
+        final int gridWidth = columns * cellSize;
+        final int gridHeight = rows * cellSize;
+        final int gridX = (gp.screenWidth - gridWidth) / 2;
+        final int gridY = gp.tileSize * 2;
+
+        // Borderless Terraria-style slots: subtle filled cells, no drawn outlines.
+        for (int slot = 0; slot < columns * rows; slot++) {
+            int col = slot % columns;
+            int row = slot / columns;
+            int x = gridX + col * cellSize;
+            int y = gridY + row * cellSize;
+            boolean selected = slot == inventoryIndex;
+            g2.setColor(selected ? new Color(92, 160, 170, 205) : new Color(205, 230, 235, 28));
+            g2.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
+
+            if (slot < stacks.size()) {
+                inventory.Inventory.Stack stack = stacks.get(slot);
+                drawInventoryItemIcon(stack.item.id, x + 8, y + 7, cellSize - 16);
+                if (stack.getQuantity() > 1) {
+                    String amount = Integer.toString(stack.getQuantity());
+                    g2.setFont(font5.deriveFont(Font.BOLD, 13F));
+                    int amountWidth = g2.getFontMetrics().stringWidth(amount);
+                    int tx = x + cellSize - amountWidth - 5;
+                    int ty = y + cellSize - 6;
+                    g2.setColor(new Color(0, 0, 0, 210));
+                    g2.drawString(amount, tx + 1, ty + 1);
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(amount, tx, ty);
                 }
-                g2.setColor(i == inventoryIndex ? Color.WHITE : new Color(220, 230, 235));
-                g2.drawString(row, gp.tileSize * 2 + gp.tileSize / 2, y);
+                if (stack.isEquipped()) {
+                    g2.setFont(font5.deriveFont(Font.BOLD, 10F));
+                    g2.setColor(new Color(255, 230, 130));
+                    g2.drawString("E", x + 5, y + 13);
+                }
             }
+        }
 
-            inventory.Inventory.Stack selected = stacks.get(
-                    Math.max(0, Math.min(inventoryIndex, stacks.size() - 1)));
+        int selectedIndex = stacks.isEmpty() ? -1 : Math.max(0, Math.min(inventoryIndex, stacks.size() - 1));
+        int panelX = gp.tileSize * 2;
+        int panelY = gridY + gridHeight + 12;
+        int panelWidth = gp.screenWidth - panelX * 2;
+        int helpY = gp.screenHeight - gp.tileSize / 2;
+
+        if (selectedIndex >= 0) {
+            inventory.Inventory.Stack selected = stacks.get(selectedIndex);
+            g2.setColor(new Color(12, 22, 29, 205));
+            g2.fillRoundRect(panelX, panelY, panelWidth, Math.max(92, helpY - panelY - 22), 14, 14);
+
+            g2.setFont(font5.deriveFont(Font.BOLD, 21F));
+            g2.setColor(new Color(235, 247, 250));
+            String itemTitle = selected.item.name + (selected.isEquipped() ? "  [EQUIPPED]" : "");
+            g2.drawString(itemTitle, panelX + 14, panelY + 27);
+
+            g2.setFont(font5.deriveFont(Font.PLAIN, 15F));
+            g2.setColor(new Color(198, 219, 225));
+            drawWrappedText(selected.item.description, panelX + 14, panelY + 50, panelWidth - 28, 19);
+
+            g2.setFont(font5.deriveFont(Font.BOLD, 14F));
+            g2.setColor(new Color(150, 220, 230));
             String action = selected.item.equippable
-                    ? "ENTER: Equip / Unequip    D: Drop stack"
-                    : "ENTER: Cannot equip this item    D: Drop stack";
-            g2.setFont(font5.deriveFont(Font.PLAIN, 18F));
-            g2.setColor(new Color(190, 225, 230));
-            g2.drawString(action, gp.tileSize * 2, gp.screenHeight - gp.tileSize * 2);
+                    ? "ENTER  Equip / Unequip     D  Drop stack"
+                    : "Not equippable     D  Drop stack";
+            g2.drawString(action, panelX + 14, helpY - 36);
+        } else {
+            g2.setFont(font5.deriveFont(Font.PLAIN, 17F));
+            g2.setColor(new Color(198, 219, 225));
+            String empty = "No items yet — your next adventure starts here.";
+            g2.drawString(empty, getXforCenteredText(empty), panelY + 36);
         }
 
-        g2.setFont(font5.deriveFont(Font.PLAIN, 18F));
-        g2.setColor(new Color(190, 225, 230));
-        String help = "W/S or UP/DOWN: Select    I/ESC: Close";
-        g2.drawString(help, getXforCenteredText(help), gp.screenHeight - gp.tileSize);
+        g2.setFont(font5.deriveFont(Font.PLAIN, 14F));
+        g2.setColor(new Color(190, 218, 225));
+        String help = "W/S or ↑/↓ Select     I/ESC Close";
+        g2.drawString(help, getXforCenteredText(help), gp.screenHeight - 10);
+
         if (messageOn && message != null) {
-            g2.setFont(font5.deriveFont(Font.BOLD, 20F));
+            g2.setFont(font5.deriveFont(Font.BOLD, 16F));
             g2.setColor(new Color(255, 220, 150));
-            g2.drawString(message, getXforCenteredText(message), gp.screenHeight - gp.tileSize * 3 / 2);
+            g2.drawString(message, getXforCenteredText(message), gridY + gridHeight + 8);
         }
+    }
+
+    private void drawInventoryItemIcon(String itemId, int x, int y, int size) {
+        Graphics2D icon = (Graphics2D) g2.create();
+        try {
+            if ("rusty_sword".equals(itemId)) {
+                icon.setColor(new Color(225, 231, 224));
+                Polygon blade = new Polygon(
+                        new int[] {x + size * 3 / 5, x + size * 4 / 5, x + size / 3},
+                        new int[] {y + size / 10, y + size / 5, y + size * 3 / 4}, 3);
+                icon.fillPolygon(blade);
+                icon.setColor(new Color(108, 126, 130));
+                icon.drawPolygon(blade);
+                icon.setColor(new Color(168, 111, 65));
+                icon.drawLine(x + size / 3, y + size * 3 / 4, x + size / 5, y + size * 9 / 10);
+                icon.setColor(new Color(224, 184, 113));
+                icon.drawLine(x + size / 5, y + size * 7 / 10, x + size / 2, y + size * 4 / 5);
+            } else if ("potion".equals(itemId)) {
+                icon.setColor(new Color(180, 211, 220));
+                icon.fillRoundRect(x + size * 2 / 5, y + size / 10, size / 5, size / 5, 4, 4);
+                icon.setColor(new Color(230, 235, 226));
+                icon.fillRoundRect(x + size / 4, y + size / 4, size / 2, size * 3 / 5, 9, 9);
+                icon.setColor(new Color(70, 195, 157));
+                icon.fillRoundRect(x + size / 4 + 3, y + size / 2, size / 2 - 6, size / 3, 7, 7);
+                icon.setColor(new Color(240, 255, 248, 190));
+                icon.drawLine(x + size / 3, y + size / 3, x + size / 3, y + size / 2);
+            } else if ("old_coin".equals(itemId)) {
+                icon.setColor(new Color(180, 124, 43));
+                icon.fillOval(x + size / 6, y + size / 6, size * 2 / 3, size * 2 / 3);
+                icon.setColor(new Color(255, 218, 104));
+                icon.drawOval(x + size / 5, y + size / 5, size * 3 / 5, size * 3 / 5);
+                icon.setFont(font5.deriveFont(Font.BOLD, Math.max(10F, size * 0.45F)));
+                icon.drawString("$", x + size * 3 / 10, y + size * 7 / 10);
+            } else {
+                icon.setColor(new Color(200, 220, 225));
+                icon.fillOval(x + size / 4, y + size / 4, size / 2, size / 2);
+            }
+        } finally {
+            icon.dispose();
+        }
+    }
+
+    private void drawWrappedText(String text, int x, int y, int maxWidth, int lineHeight) {
+        if (text == null || text.isEmpty()) return;
+        StringBuilder line = new StringBuilder();
+        for (String word : text.split("\\s+")) {
+            String candidate = line.length() == 0 ? word : line + " " + word;
+            if (g2.getFontMetrics().stringWidth(candidate) > maxWidth && line.length() > 0) {
+                g2.drawString(line.toString(), x, y);
+                y += lineHeight;
+                line.setLength(0);
+                line.append(word);
+            } else {
+                if (line.length() > 0) line.append(' ');
+                line.append(word);
+            }
+        }
+        if (line.length() > 0) g2.drawString(line.toString(), x, y);
     }
 
     public void drawDebugStats(Graphics2D g2, double renderTimeMs, int fps) {
