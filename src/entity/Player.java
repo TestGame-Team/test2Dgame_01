@@ -227,7 +227,7 @@ public class Player extends Entity{
 			
 			if(!gp.monster[i].invincible) {
 				
-				gp.monster[i].life--;
+				gp.monster[i].life -= 1 + inventory.getEquippedAttackBonus();
 				gp.monster[i].invincible = true;
 				
 				if(gp.monster[i].life <= 0) {
