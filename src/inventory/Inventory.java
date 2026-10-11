@@ -64,6 +64,14 @@ public final class Inventory {
         return remaining;
     }
 
+    public int getEquippedAttackBonus() {
+        int bonus = 0;
+        for (Stack stack : stacks) {
+            if (stack.equipped) bonus += stack.item.attackBonus;
+        }
+        return bonus;
+    }
+
     public boolean toggleEquip(int index) {
         if (!isValid(index)) return false;
         Stack selected = stacks.get(index);
