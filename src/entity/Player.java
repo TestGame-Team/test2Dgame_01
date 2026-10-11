@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import main.KeyHandler;
+import inventory.Inventory;
+import inventory.Item;
 
 public class Player extends Entity{
 
@@ -17,6 +19,7 @@ public class Player extends Entity{
 	public final int screenY;
 //	public int hasKey = 0;
 	int standCounter = 0;
+	public final Inventory inventory = new Inventory(20);
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
@@ -42,6 +45,10 @@ public class Player extends Entity{
 		attackArea.height = 36;
 		
 		setDefaultValues();
+		// Temporary starter items let us test inventory actions before loot drops exist.
+		inventory.addItem(Item.RUSTY_SWORD, 1);
+		inventory.addItem(Item.POTION, 3);
+		inventory.addItem(Item.OLD_COIN, 5);
 		getPlayerImage();
 		getPlayerAttackImage();
 	}
