@@ -115,6 +115,10 @@ public class KeyHandler implements KeyListener{
 				leftPressed = true;
 			}else if(code == KeyEvent.VK_T) {
 				debugPressed = true;
+			}else if(code == KeyEvent.VK_I) {
+				gp.ui.inventoryIndex = 0;
+				gp.ui.messageOn = false;
+				gp.gameState = gp.inventoryState;
 			}else if(code == KeyEvent.VK_P) {
 					gp.gameState = gp.pauseState;
 			}else if(code == KeyEvent.VK_ENTER) {
@@ -125,6 +129,35 @@ public class KeyHandler implements KeyListener{
 		else if(gp.gameState == gp.dialogueState) {
 			if(code == KeyEvent.VK_ENTER)
 			gp.gameState = gp.playState;
+		}
+		//INVENTORY STATE
+		else if(gp.gameState == gp.inventoryState) {
+			java.util.List<inventory.Inventory.Stack> stacks = gp.player.inventory.getStacks();
+			if(code == KeyEvent.VK_I || code == KeyEvent.VK_ESCAPE) {
+				gp.ui.messageOn = false;
+				gp.gameState = gp.playState;
+			} else if(!stacks.isEmpty() && (code == KeyEvent.VK_W || code == KeyEvent.VK_UP)) {
+				gp.ui.inventoryIndex = (gp.ui.inventoryIndex + stacks.size() - 1) % stacks.size();
+				gp.ui.messageOn = false;
+			} else if(!stacks.isEmpty() && (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)) {
+				gp.ui.inventoryIndex = (gp.ui.inventoryIndex + 1) % stacks.size();
+				gp.ui.messageOn = false;
+			} else if(!stacks.isEmpty() && code == KeyEvent.VK_ENTER) {
+				inventory.Inventory.Stack selected = stacks.get(gp.ui.inventoryIndex);
+				if(gp.player.inventory.toggleEquip(gp.ui.inventoryIndex)) {
+					gp.ui.showMessage(selected.isEquipped()
+							? "Equipped " + selected.item.name
+							: "Unequipped " + selected.item.name);
+				} else {
+					gp.ui.showMessage(selected.item.name + " cannot be equipped.");
+				}
+			} else if(!stacks.isEmpty() && code == KeyEvent.VK_D) {
+				inventory.Inventory.Stack dropped = gp.player.inventory.drop(gp.ui.inventoryIndex);
+				gp.ui.showMessage("Dropped " + dropped.item.name + " x" + dropped.getQuantity());
+				if(gp.ui.inventoryIndex >= gp.player.inventory.getStacks().size()) {
+					gp.ui.inventoryIndex = Math.max(0, gp.player.inventory.getStacks().size() - 1);
+				}
+			}
 		}
 		//PAUSE STATE
 		else if(gp.gameState == gp.pauseState) {
