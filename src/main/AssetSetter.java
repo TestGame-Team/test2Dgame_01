@@ -22,19 +22,22 @@ public class AssetSetter {
 	}
 	public void setNPC() {
 
-		gp.npc[0] = new NPC_OldMan(gp);
-		gp.npc[0].worldX = gp.tileSize*21;
-		gp.npc[0].worldY = gp.tileSize*22;
+        NPC_OldMan oldMan = new NPC_OldMan(gp);
+        oldMan.worldX = gp.tileSize * 21;
+        oldMan.worldY = gp.tileSize * 22;
+        gp.addNpc(oldMan);
 	}
 	public void setMonster() {
 
-		gp.monster[0] = new M_GreenSlime(gp);
-		gp.monster[0].worldX = gp.tileSize*11;
-		gp.monster[0].worldY = gp.tileSize*10;
-		
-		gp.monster[1] = new M_GreenSlime(gp);
-		gp.monster[1].worldX = gp.tileSize*11;
-		gp.monster[1].worldY = gp.tileSize*11;
+        M_GreenSlime slimeOne = new M_GreenSlime(gp);
+        slimeOne.worldX = gp.tileSize * 11;
+        slimeOne.worldY = gp.tileSize * 10;
+        gp.addMonster(slimeOne);
+
+        M_GreenSlime slimeTwo = new M_GreenSlime(gp);
+        slimeTwo.worldX = gp.tileSize * 11;
+        slimeTwo.worldY = gp.tileSize * 11;
+        gp.addMonster(slimeTwo);
 
 	}
 }
