@@ -67,7 +67,13 @@ public class TileManager {
         setup(41, "tree", true);
 
         // PLACEHOLDER
-        setup(42, "tree", true);
+        tile[42] = new Tile();
+        tile[42].image = AssetManager.getImage(
+                "/objects/door",
+                gp.tileSize,
+                gp.tileSize
+        );
+        tile[42].collision = false;
         setup(43, "tree", true);
         setup(44, "tree", true);
         setup(45, "tree", true);
