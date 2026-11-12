@@ -66,9 +66,18 @@ Current placement is hard-coded in `src/main/AssetSetter.java`:
 - `setMonster()` creates two `M_GreenSlime` instances at (11, 10) and (11, 11).
 - `setObject()` is currently empty.
 
-Coordinates are tile coordinates multiplied by `gp.tileSize` (48 pixels). The arrays are allocated in `GamePanel.java` with 10 slots each. When adding another instance, check the available array capacity and avoid overwriting an occupied slot.
+Coordinates are tile coordinates multiplied by `gp.tileSize` (48 pixels). The NPC, monster, and object arrays start with 10 slots for compatibility, then grow automatically when full. Register new instances through `gp.addNpc(entity)`, `gp.addMonster(entity)`, or `gp.addObject(entity)`. These methods use an empty slot first and expand only when needed. Set each entity's `worldX` and `worldY` in pixels before registering it; for tile coordinates, multiply the column and row by `gp.tileSize` (48).
 
-For now, the safest workflow is to make placement changes in `AssetSetter.java`, not to modify the game loop. A data-file-driven spawn system would be a separate engine feature and should only be introduced with a small test map and a verified fallback.
+For now, the safest workflow is to make placement changes in `AssetSetter.java`, not to modify the game loop. Example:
+
+```java
+M_GreenSlime slime = new M_GreenSlime(gp);
+slime.worldX = 12 * gp.tileSize;
+slime.worldY = 8 * gp.tileSize;
+gp.addMonster(slime);
+```
+
+The existing update, collision, and draw loops continue to work with the expanded arrays. A data-file-driven spawn system is a separate feature and is not required to add more entities.
 
 ## 5. Image loading rules
 
