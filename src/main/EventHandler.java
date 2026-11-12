@@ -2,94 +2,109 @@ package main;
 
 public class EventHandler {
 
-	GamePanel gp;
-	EventRect eventRect[][];
-	
-	int prevEventX, prevEventY;
-	boolean safeEvent = true;
-	
-	public EventHandler(GamePanel gp) {
-		this.gp = gp;
-		eventRect = new EventRect[gp.maxWorldCol][gp.maxWorldRow];
-		int col = 0, row = 0;
-		while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
-			
-			eventRect[col][row] = new EventRect();
-			eventRect[col][row].x = 23;
-			eventRect[col][row].y = 23;
-			eventRect[col][row].width = 2;
-			eventRect[col][row].height = 2;
-			eventRect[col][row].eventRectDefaultX = eventRect[col][row].x;
-			eventRect[col][row].eventRectDefaultY = eventRect[col][row].y;
-			
-			col++;
-			if(col == gp.maxWorldCol) {
-				col = 0; row++;
-			}
-		}
-	}
-	public void checkEvent() {
-		
-		int x = Math.abs(gp.player.worldX - prevEventX);
-		int y = Math.abs(gp.player.worldY - prevEventY);
-		int s = Math.max(x, y);
-		
-		if(s > gp.tileSize) {
-			safeEvent = true;
-		}
-		if(safeEvent) {
-			if(hit(29, 21, "right") == true || hit(29, 21, "left") == true) {
-				damagePit(29, 21, gp.dialogueState);
-			}else if(hit(23, 12, "up") == true) {
-				healPool(23, 12, gp.dialogueState);
-			}else if(hit(27, 16, "right") == true) {
-				teleport(27, 16, gp.dialogueState);
-			}
-		}
-	}
-	public boolean hit(int col, int row, String reqDir) {
-		
-		boolean hit = false;
-		
-		gp.player.solidArea.x += gp.player.worldX;
-		gp.player.solidArea.y += gp.player.worldY;
-		eventRect[col][row].x += col*gp.tileSize;
-		eventRect[col][row].y += row*gp.tileSize;
+    private final GamePanel gp;
+    private final EventRect[][] eventRect;
 
-		if(gp.player.solidArea.intersects(eventRect[col][row]) && !eventRect[col][row].eventDone) {
-			if(gp.player.direction.equals(reqDir) || reqDir.equals("any")) {
-				hit = true;
-				prevEventX = gp.player.worldX;
-				prevEventY = gp.player.worldY;
-			}
-		}
-		
-		gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-		gp.player.solidArea.y = gp.player.solidAreaDefaultY;
-		eventRect[col][row].x = eventRect[col][row].eventRectDefaultX;
-		eventRect[col][row].y = eventRect[col][row].eventRectDefaultY;
-		
-		return hit;
-	}
-	public void damagePit(int col, int row, int gameState) {
-		gp.gameState = gameState;
-		gp.ui.currentDialogue = "You Fall into a Pit!!!";
-		gp.player.life--;
-//		eventRect[col][row].eventDone = true;
-		safeEvent = false;
-	}
-	public void healPool(int col, int row, int gameState) {
-		if(gp.keyH.enterPressed == true) {
-			gp.gameState = gameState;
-			gp.ui.currentDialogue = "You have been healed!!!";
-			gp.player.life = gp.player.maxLife;
-		}
-	}
-	public void teleport(int col, int row, int gameState) {
-		gp.gameState = gameState;
-		gp.ui.currentDialogue = "Teleport!!!";
-		gp.player.worldX = gp.tileSize*37;
-		gp.player.worldY = gp.tileSize*10;
-	}
-	
+    private int prevEventX;
+    private int prevEventY;
+    private boolean safeEvent = true;
+
+    public EventHandler(GamePanel gp) {
+        this.gp = gp;
+        eventRect = new EventRect[gp.maxWorldCol][gp.maxWorldRow];
+
+        for (int col = 0; col < gp.maxWorldCol; col++) {
+            for (int row = 0; row < gp.maxWorldRow; row++) {
+                eventRect[col][row] = new EventRect();
+                eventRect[col][row].setBounds(23, 23, 2, 2);
+                eventRect[col][row].eventRectDefaultX = 23;
+                eventRect[col][row].eventRectDefaultY = 23;
+            }
+        }
+    }
+
+    public void checkEvent() {
+        int xDistance = Math.abs(gp.player.worldX - prevEventX);
+        int yDistance = Math.abs(gp.player.worldY - prevEventY);
+        if (Math.max(xDistance, yDistance) > gp.tileSize) {
+            safeEvent = true;
+        }
+
+        if (!safeEvent) {
+            return;
+        }
+
+        // Existing world events.
+        if (hit(29, 21, "right") || hit(29, 21, "left")) {
+            damagePit();
+            return;
+        }
+
+        if (hit(23, 12, "up")) {
+            healPool();
+            return;
+        }
+
+        // Doorways are interaction points: stand on the doorway and press ENTER.
+        if (gp.activeMapResource.equals("/maps/big-map_02.txt")
+                && hit(27, 16, "any") && gp.keyH.enterPressed) {
+            gp.changeMap("/maps/big-map_01.txt", 10, 39);
+            return;
+        }
+
+        if (gp.activeMapResource.equals("/maps/big-map_01.txt")
+                && hit(10, 39, "any") && gp.keyH.enterPressed) {
+            gp.changeMap("/maps/big-map_02.txt", 27, 16);
+        }
+    }
+
+    private boolean hit(int col, int row, String requiredDirection) {
+        RectangleReset reset = new RectangleReset();
+        boolean collided = false;
+
+        gp.player.solidArea.x += gp.player.worldX;
+        gp.player.solidArea.y += gp.player.worldY;
+        EventRect target = eventRect[col][row];
+        target.x += col * gp.tileSize;
+        target.y += row * gp.tileSize;
+
+        if (gp.player.solidArea.intersects(target) && !target.eventDone
+                && (gp.player.direction.equals(requiredDirection)
+                    || "any".equals(requiredDirection))) {
+            collided = true;
+            prevEventX = gp.player.worldX;
+            prevEventY = gp.player.worldY;
+        }
+
+        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
+        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+        target.x = target.eventRectDefaultX;
+        target.y = target.eventRectDefaultY;
+        return collided;
+    }
+
+    public void resetAfterMapChange() {
+        prevEventX = gp.player.worldX;
+        prevEventY = gp.player.worldY;
+        safeEvent = false;
+    }
+
+    private void damagePit() {
+        gp.gameState = gp.dialogueState;
+        gp.ui.currentDialogue = "You Fall into a Pit!!!";
+        gp.player.life--;
+        safeEvent = false;
+    }
+
+    private void healPool() {
+        if (gp.keyH.enterPressed) {
+            gp.gameState = gp.dialogueState;
+            gp.ui.currentDialogue = "You have been healed!!!";
+            gp.player.life = gp.player.maxLife;
+            safeEvent = false;
+        }
+    }
+
+    // Keeps the hit-test's temporary coordinate changes local and explicit.
+    private static final class RectangleReset { }
 }

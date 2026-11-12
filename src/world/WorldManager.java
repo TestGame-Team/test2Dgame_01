@@ -1,5 +1,9 @@
 package world;
 
+/**
+ * Owns the active world map and supports loading another map resource
+ * without replacing the WorldMap instance used by TileManager.
+ */
 public final class WorldManager {
 
     private final WorldMap worldMap;
@@ -11,5 +15,9 @@ public final class WorldManager {
 
     public WorldMap getMap() {
         return worldMap;
+    }
+
+    public void loadMap(String mapResource) {
+        worldMap.load(mapResource);
     }
 }

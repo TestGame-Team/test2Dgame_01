@@ -32,8 +32,9 @@ public class GamePanel extends JPanel implements Runnable{
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
+    public String activeMapResource = "/maps/big-map_02.txt";
     public final WorldManager worldManager =
-            new WorldManager(maxWorldCol, maxWorldRow, "/maps/big-map_02.txt");
+            new WorldManager(maxWorldCol, maxWorldRow, activeMapResource);
     TileManager tileM = new TileManager(this, worldManager.getMap());
     public final SaveManager saveManager = new SaveManager(this);
     public KeyHandler keyH = new KeyHandler(this);
@@ -74,6 +75,27 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setMonster();
         // playMusic(0);
         gameState = titleState;
+    }
+
+    /**
+     * Switches the active tile map and places the player at the destination
+     * tile's world coordinate. TileManager keeps using the same WorldMap.
+     */
+    public void changeMap(String mapResource, int spawnCol, int spawnRow) {
+        if (spawnCol < 0 || spawnCol >= maxWorldCol
+                || spawnRow < 0 || spawnRow >= maxWorldRow) {
+            throw new IllegalArgumentException("Player spawn is outside the map.");
+        }
+
+        worldManager.loadMap(mapResource);
+        activeMapResource = mapResource;
+        player.worldX = spawnCol * tileSize;
+        player.worldY = spawnRow * tileSize;
+        player.spriteNum = 1;
+        player.spriteCounter = 0;
+        keyH.enterPressed = false;
+        eHandler.resetAfterMapChange();
+        gameState = playState;
     }
 
     public void startGameThread() {
