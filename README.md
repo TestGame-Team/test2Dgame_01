@@ -10,6 +10,14 @@ A Java 21 2D game project built with Swing/AWT and managed as an Eclipse Java pr
 
 The `src` and `res` folders are configured as source folders. Keep `res` on the classpath because the game loads maps and images as classpath resources.
 
+## Controls
+
+- **WASD / Arrow Keys:** Move; navigate the inventory while it is open.
+- **I:** Open or close the inventory.
+- **Enter:** Interact with objects; use or equip the selected inventory item.
+- **X:** Drop the selected inventory stack.
+- **Esc:** Close the inventory or back out of menus.
+
 ## Project guide
 
 See [Content and Asset Handoff](docs/CONTENT_PIPELINE.md) for the current folder layout, tile IDs, map format, asset-loading rules, NPC/monster placement, team ownership, and a safe Eclipse test checklist.
