@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.Rectangle;
+
 public class EventHandler {
 
     private final GamePanel gp;
@@ -45,23 +47,40 @@ public class EventHandler {
             return;
         }
 
-        // Temporary map cycle using the existing 50x50 placeholder maps.
+        // Temporary map cycle. Door interaction uses the whole tile,
+        // rather than the tiny 2x2 event rectangle used by other events.
         if (gp.activeMapResource.equals("/maps/big-map_02.txt")
-                && hit(27, 16, "any") && gp.keyH.enterPressed) {
+                && hitDoorTile(27, 16) && gp.keyH.enterPressed) {
             gp.changeMap("/maps/big-map_03.txt", 27, 16);
             return;
         }
 
         if (gp.activeMapResource.equals("/maps/big-map_03.txt")
-                && hit(27, 16, "any") && gp.keyH.enterPressed) {
+                && hitDoorTile(27, 16) && gp.keyH.enterPressed) {
             gp.changeMap("/maps/big-map_04.txt", 25, 25);
             return;
         }
 
         if (gp.activeMapResource.equals("/maps/big-map_04.txt")
-                && hit(25, 25, "any") && gp.keyH.enterPressed) {
+                && hitDoorTile(25, 25) && gp.keyH.enterPressed) {
             gp.changeMap("/maps/big-map_02.txt", 27, 16);
         }
+    }
+
+    private boolean hitDoorTile(int col, int row) {
+        Rectangle playerBounds = new Rectangle(
+                gp.player.worldX + gp.player.solidArea.x,
+                gp.player.worldY + gp.player.solidArea.y,
+                gp.player.solidArea.width,
+                gp.player.solidArea.height
+        );
+        Rectangle doorBounds = new Rectangle(
+                col * gp.tileSize,
+                row * gp.tileSize,
+                gp.tileSize,
+                gp.tileSize
+        );
+        return playerBounds.intersects(doorBounds);
     }
 
     private boolean hit(int col, int row, String requiredDirection) {
@@ -91,7 +110,9 @@ public class EventHandler {
     public void resetAfterMapChange() {
         prevEventX = gp.player.worldX;
         prevEventY = gp.player.worldY;
-        safeEvent = false;
+        // The destination door should be usable immediately on the next
+        // Enter press; the key handler already clears the current press.
+        safeEvent = true;
     }
 
     private void damagePit() {
