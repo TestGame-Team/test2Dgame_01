@@ -59,7 +59,6 @@ public class EventHandler {
     }
 
     private boolean hit(int col, int row, String requiredDirection) {
-        RectangleReset reset = new RectangleReset();
         boolean collided = false;
 
         gp.player.solidArea.x += gp.player.worldX;
@@ -105,6 +104,4 @@ public class EventHandler {
         }
     }
 
-    // Keeps the hit-test's temporary coordinate changes local and explicit.
-    private static final class RectangleReset { }
 }
