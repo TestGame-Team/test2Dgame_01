@@ -43,6 +43,36 @@ public class GamePanel extends JPanel implements Runnable{
     Sound se = new Sound();
     Thread gameThread;
 
+    // ENTITY REGISTRATION
+    // Keep compatibility with existing array-based loops while allowing
+    // content creators to add as many entities as the available memory permits.
+    private Entity[] addToEntityArray(Entity[] entities, Entity entity) {
+        if (entity == null) {
+            return entities;
+        }
+        for (int i = 0; i < entities.length; i++) {
+            if (entities[i] == null) {
+                entities[i] = entity;
+                return entities;
+            }
+        }
+        Entity[] expanded = Arrays.copyOf(entities, entities.length + 1);
+        expanded[entities.length] = entity;
+        return expanded;
+    }
+
+    public void addNpc(Entity entity) {
+        npc = addToEntityArray(npc, entity);
+    }
+
+    public void addMonster(Entity entity) {
+        monster = addToEntityArray(monster, entity);
+    }
+
+    public void addObject(Entity entity) {
+        obj = addToEntityArray(obj, entity);
+    }
+
     //ENTITY & OBJECT
     public Player player = new Player(this, keyH);
     public Entity obj[] = new Entity[10];
