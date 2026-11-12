@@ -91,6 +91,19 @@ public final class Inventory {
         return true;
     }
 
+    /** Consumes one item from a stack and returns its definition; null means invalid or empty. */
+    public Item consumeOne(int index) {
+        if (!isValid(index)) return null;
+        Stack stack = stacks.get(index);
+        Item consumed = stack.item;
+        if (stack.quantity > 1) {
+            stack.setQuantity(stack.quantity - 1);
+        } else {
+            stacks.remove(index);
+        }
+        return consumed;
+    }
+
     /** Drops the entire selected stack and returns it; null means invalid selection. */
     public Stack drop(int index) {
         if (!isValid(index)) return null;
