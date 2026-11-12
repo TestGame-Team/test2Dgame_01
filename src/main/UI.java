@@ -120,7 +120,7 @@ public class UI {
             }
         }
 
-        int selectedIndex = stacks.isEmpty() ? -1 : Math.max(0, Math.min(inventoryIndex, stacks.size() - 1));
+        int selectedIndex = inventoryIndex >= 0 && inventoryIndex < stacks.size() ? inventoryIndex : -1;
         int panelX = gp.tileSize * 2;
         int panelY = gridY + gridHeight + 12;
         int panelWidth = gp.screenWidth - panelX * 2;
@@ -143,8 +143,10 @@ public class UI {
             g2.setFont(font5.deriveFont(Font.BOLD, 14F));
             g2.setColor(new Color(150, 220, 230));
             String action = selected.item.equippable
-                    ? "ENTER  Equip / Unequip     D  Drop stack"
-                    : "Not equippable     D  Drop stack";
+                    ? "ENTER  Equip / Unequip     X  Drop stack"
+                    : selected.item.usable
+                            ? "ENTER  Use item     X  Drop stack"
+                            : "Not usable     X  Drop stack";
             g2.drawString(action, panelX + 14, helpY - 36);
         } else {
             g2.setFont(font5.deriveFont(Font.PLAIN, 17F));
@@ -155,7 +157,7 @@ public class UI {
 
         g2.setFont(font5.deriveFont(Font.PLAIN, 14F));
         g2.setColor(new Color(190, 218, 225));
-        String help = "W/S or ↑/↓ Select     I/ESC Close";
+        String help = "WASD / Arrow Keys  Navigate     ENTER  Use/Equip     X  Drop     I/ESC  Close";
         g2.drawString(help, getXforCenteredText(help), gp.screenHeight - 10);
 
         if (messageOn && message != null) {
