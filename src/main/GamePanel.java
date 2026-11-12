@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.*;
+import java.util.concurrent.locks.LockSupport;
 import javax.swing.JPanel;
 import entity.Entity;
 import entity.Player;
@@ -56,7 +57,8 @@ public class GamePanel extends JPanel implements Runnable{
                 return entities;
             }
         }
-        Entity[] expanded = Arrays.copyOf(entities, entities.length + 1);
+        int newCapacity = Math.max(entities.length + 1, entities.length * 2);
+        Entity[] expanded = Arrays.copyOf(entities, newCapacity);
         expanded[entities.length] = entity;
         return expanded;
     }
@@ -160,6 +162,9 @@ public class GamePanel extends JPanel implements Runnable{
                 drawCount = 0;
                 timer = 0;
             }
+
+            // Yield the CPU while waiting for the next frame instead of busy-spinning.
+            LockSupport.parkNanos(1_000_000L);
         }
     }
 
