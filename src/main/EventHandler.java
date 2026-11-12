@@ -45,15 +45,21 @@ public class EventHandler {
             return;
         }
 
-        // Doorways are interaction points: stand on the doorway and press ENTER.
+        // Temporary map cycle using the existing 50x50 placeholder maps.
         if (gp.activeMapResource.equals("/maps/big-map_02.txt")
                 && hit(27, 16, "any") && gp.keyH.enterPressed) {
-            gp.changeMap("/maps/big-map_01.txt", 10, 39);
+            gp.changeMap("/maps/big-map_03.txt", 27, 16);
             return;
         }
 
-        if (gp.activeMapResource.equals("/maps/big-map_01.txt")
-                && hit(10, 39, "any") && gp.keyH.enterPressed) {
+        if (gp.activeMapResource.equals("/maps/big-map_03.txt")
+                && hit(27, 16, "any") && gp.keyH.enterPressed) {
+            gp.changeMap("/maps/big-map_04.txt", 25, 25);
+            return;
+        }
+
+        if (gp.activeMapResource.equals("/maps/big-map_04.txt")
+                && hit(25, 25, "any") && gp.keyH.enterPressed) {
             gp.changeMap("/maps/big-map_02.txt", 27, 16);
         }
     }
