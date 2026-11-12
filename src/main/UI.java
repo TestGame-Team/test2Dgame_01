@@ -7,6 +7,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import object.OBJ_Heart;
+import content.AssetManager;
 import entity.Entity;
 
 public class UI {
@@ -168,43 +169,23 @@ public class UI {
     }
 
     private void drawInventoryItemIcon(String itemId, int x, int y, int size) {
-        Graphics2D icon = (Graphics2D) g2.create();
-        try {
-            if ("rusty_sword".equals(itemId)) {
-                icon.setColor(new Color(225, 231, 224));
-                Polygon blade = new Polygon(
-                        new int[] {x + size * 3 / 5, x + size * 4 / 5, x + size / 3},
-                        new int[] {y + size / 10, y + size / 5, y + size * 3 / 4}, 3);
-                icon.fillPolygon(blade);
-                icon.setColor(new Color(108, 126, 130));
-                icon.drawPolygon(blade);
-                icon.setColor(new Color(168, 111, 65));
-                icon.drawLine(x + size / 3, y + size * 3 / 4, x + size / 5, y + size * 9 / 10);
-                icon.setColor(new Color(224, 184, 113));
-                icon.drawLine(x + size / 5, y + size * 7 / 10, x + size / 2, y + size * 4 / 5);
-            } else if ("potion".equals(itemId)) {
-                icon.setColor(new Color(180, 211, 220));
-                icon.fillRoundRect(x + size * 2 / 5, y + size / 10, size / 5, size / 5, 4, 4);
-                icon.setColor(new Color(230, 235, 226));
-                icon.fillRoundRect(x + size / 4, y + size / 4, size / 2, size * 3 / 5, 9, 9);
-                icon.setColor(new Color(70, 195, 157));
-                icon.fillRoundRect(x + size / 4 + 3, y + size / 2, size / 2 - 6, size / 3, 7, 7);
-                icon.setColor(new Color(240, 255, 248, 190));
-                icon.drawLine(x + size / 3, y + size / 3, x + size / 3, y + size / 2);
-            } else if ("old_coin".equals(itemId)) {
-                icon.setColor(new Color(180, 124, 43));
-                icon.fillOval(x + size / 6, y + size / 6, size * 2 / 3, size * 2 / 3);
-                icon.setColor(new Color(255, 218, 104));
-                icon.drawOval(x + size / 5, y + size / 5, size * 3 / 5, size * 3 / 5);
-                icon.setFont(font5.deriveFont(Font.BOLD, Math.max(10F, size * 0.45F)));
-                icon.drawString("$", x + size * 3 / 10, y + size * 7 / 10);
-            } else {
-                icon.setColor(new Color(200, 220, 225));
-                icon.fillOval(x + size / 4, y + size / 4, size / 2, size / 2);
-            }
-        } finally {
-            icon.dispose();
+        // Reuse existing game sprites and scale them to fit the inventory slot.
+        String assetPath;
+        switch (itemId) {
+            case "rusty_sword":
+                assetPath = "/player/boy_attack_down_1";
+                break;
+            case "potion":
+                assetPath = "/objects/heart_full";
+                break;
+            case "old_coin":
+                assetPath = "/objects/key";
+                break;
+            default:
+                assetPath = "/tiles/earth";
+                break;
         }
+        g2.drawImage(AssetManager.getImage(assetPath, size, size), x, y, null);
     }
 
     private void drawWrappedText(String text, int x, int y, int maxWidth, int lineHeight) {
@@ -264,6 +245,7 @@ public class UI {
             drawCenteredPauseText("P       - Resume");
             drawCenteredPauseText("ESC     - Back");
             drawCenteredPauseText("T       - Debug");
+            drawCenteredPauseText("I       - Open Inventory");
         }
 
         if (messageOn) {
