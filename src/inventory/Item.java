@@ -4,13 +4,13 @@ package inventory;
 public final class Item {
     public static final Item RUSTY_SWORD = new Item(
             "rusty_sword", "Rusty Sword", "A worn blade. Simple, but better than bare hands.",
-            false, 1, true, "WEAPON", 1);
+            false, 1, true, "WEAPON", 1, false, 0);
     public static final Item POTION = new Item(
             "potion", "Potion", "A small healing draught. Its effects will be useful on the road.",
-            true, 99, false, "", 0);
+            true, 99, false, "", 0, true, 2);
     public static final Item OLD_COIN = new Item(
             "old_coin", "Old Coin", "An old coin with a faded crest. It may be worth something.",
-            true, 999, false, "", 0);
+            true, 999, false, "", 0, false, 0);
 
     public final String id;
     public final String name;
@@ -20,9 +20,12 @@ public final class Item {
     public final boolean equippable;
     public final String equipmentSlot;
     public final int attackBonus;
+    public final boolean usable;
+    public final int healingAmount;
 
     private Item(String id, String name, String description, boolean stackable, int maxStack,
-                 boolean equippable, String equipmentSlot, int attackBonus) {
+                 boolean equippable, String equipmentSlot, int attackBonus,
+                 boolean usable, int healingAmount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,5 +34,7 @@ public final class Item {
         this.equippable = equippable;
         this.equipmentSlot = equipmentSlot;
         this.attackBonus = attackBonus;
+        this.usable = usable;
+        this.healingAmount = healingAmount;
     }
 }
